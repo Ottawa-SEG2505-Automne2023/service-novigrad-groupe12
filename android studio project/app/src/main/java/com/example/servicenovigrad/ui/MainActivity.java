@@ -1,8 +1,10 @@
-package com.example.servicenovigrad;
+package com.example.servicenovigrad.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.example.servicenovigrad.R;
 
 public class MainActivity extends AppCompatActivity {
 

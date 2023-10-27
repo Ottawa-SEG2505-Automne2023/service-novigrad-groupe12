@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Button;
 
 import com.example.servicenovigrad.R;
+import com.example.servicenovigrad.backend.AccountHandler;
 import com.example.servicenovigrad.backend.FieldValidator;
 import com.example.servicenovigrad.backend.Updatable;
 
@@ -43,7 +44,7 @@ public class LoginActivity extends AppCompatActivity implements Updatable {
     }
 
     // Enables/disables the login button depending on the states of the input fields
-    public void updateUI() {
+    public void update() {
         btnLogin.setEnabled(userLabel.getTextColors().getDefaultColor() != 0xFFFF0000 && passLabel.getTextColors().getDefaultColor() != 0xFFFF0000 && userField.getText().length() != 0 && passField.getText().length() >= 8);
     }
 
@@ -52,6 +53,7 @@ public class LoginActivity extends AppCompatActivity implements Updatable {
         // Get password data from the database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference userRef = database.getReference("users/" + userField.getText() + "/password");
+
         userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -60,6 +62,7 @@ public class LoginActivity extends AppCompatActivity implements Updatable {
                     // And the passwords match
                     if (passField.getText().toString().equals(snapshot.getValue(String.class))) {
                         // Enter the main activity
+                        AccountHandler.user = userField.getText().toString();
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     }
                     // If they don't,
@@ -85,6 +88,6 @@ public class LoginActivity extends AppCompatActivity implements Updatable {
 
     // Goes to the account creation menu
     public void signupMenu(View view) {
-        
+        startActivity(new Intent(getApplicationContext(), SignupActivity.class));
     }
 }

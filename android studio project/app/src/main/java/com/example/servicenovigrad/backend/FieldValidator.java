@@ -33,7 +33,7 @@ public class FieldValidator implements TextWatcher {
             fieldLabel.setTextColor(0xFF000000);
             fieldLabel.setText(initialText);
         }
-        origin.updateUI();
+        origin.update();
     }
 
     // No implementation currently needed, has to be here for the implementation of the Interface

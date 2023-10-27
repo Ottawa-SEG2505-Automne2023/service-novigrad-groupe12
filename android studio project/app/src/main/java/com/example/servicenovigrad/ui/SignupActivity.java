@@ -1,36 +1,35 @@
-package com.example.servicenovigrad;
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Button;
+package com.example.servicenovigrad.ui;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.DatabaseReference;
+import android.widget.Spinner;
+import android.widget.EditText;
+import android.widget.Button;
 
-public class SignupActivity extends AppCompatActivity {
-    EditText signUpName, signUpusername, signUpemail,signUppassword, role;
-    TextView loginRedirect;
-    Button Signup;
-    FirebaseDatabase database;
-    DatabaseReference reference;
+import com.example.servicenovigrad.R;
+import com.example.servicenovigrad.backend.Updatable;
+
+public class SignupActivity extends AppCompatActivity implements Updatable {
+    private Spinner roleSpinner;
+    private EditText signupUsername, signupPrenom, signupNom, signupPassword;
+    private Button btnSignup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
-        FirebaseDatabase database= FirebaseDatabase.getInstance();
-        DatabaseReference newUserRoleRef = database.getReference("users/" + signUpName.getText() + "/role");
-        DatabaseReference newUserEmailRef = database.getReference("users/" + signUpemail.getText() + "/email");
-        DatabaseReference newUserPasswordRef = database.getReference("users/" + signUppassword.getText() + "/password");
+        roleSpinner = (Spinner) findViewById(R.id.roleSpinner);
+        signupUsername = (EditText) findViewById(R.id.signupUsername);
+        signupPrenom = (EditText) findViewById(R.id.signupPrenom);
+        signupNom = (EditText) findViewById(R.id.signupNom);
+        signupPassword = (EditText) findViewById(R.id.signupPassword);
+        btnSignup = (Button) findViewById(R.id.btnSignup);
+    }
 
-        newUserRoleRef.setValue(role);
-        newUserEmailRef.setValue(signUpemail);
-        newUserPasswordRef.setValue(signUppassword);
+    // Todo: Add TextViews to explain things; validate username & password with FieldValidator, update button accordingly.
+    public void update() {
+
     }
 }

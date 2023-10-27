@@ -2,8 +2,14 @@
     <string name="app_name">Service Novigrad</string>
     <string name="username">Nom d\'utilisateur</string>
     <string name="password">Mot de passe</string>
+    <string name="prenom">Prénom</string>
+    <string name="nom">Nom</string>
     <string name="login">Se connecter</string>
     <string name="signup">Créer un compte</string>
     <string name="wrong_password">Mot de passe incorrect!</string>
     <string name="wrong_user">L\'utilisateur n\'existe pas</string>
+    <string-array name="signup_roles">
+        <item>Client</item>
+        <item>Employé</item>
+    </string-array>
 </resources>

@@ -8,8 +8,9 @@
     <string name="signup">Créer un compte</string>
     <string name="wrong_password">Mot de passe incorrect!</string>
     <string name="wrong_user">L\'utilisateur n\'existe pas</string>
+    <string name="role_prompt">Vous créez un compte en tant que:</string>
     <string-array name="signup_roles">
         <item>Client</item>
-        <item>Employé</item>
+        <item>Employé de la succursale</item>
     </string-array>
 </resources>

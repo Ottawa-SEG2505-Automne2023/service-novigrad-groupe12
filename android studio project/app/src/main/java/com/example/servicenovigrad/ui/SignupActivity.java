@@ -1,9 +1,11 @@
 package com.example.servicenovigrad.ui;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Spinner;
 import android.widget.EditText;
@@ -14,8 +16,11 @@ import com.example.servicenovigrad.R;
 import com.example.servicenovigrad.backend.AccountHandler;
 import com.example.servicenovigrad.backend.FieldValidator;
 import com.example.servicenovigrad.backend.Updatable;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class SignupActivity extends AppCompatActivity implements Updatable {
     private Spinner roleSpinner;
@@ -62,19 +67,37 @@ public class SignupActivity extends AppCompatActivity implements Updatable {
 
         // Set values in the database, creating the account
         DatabaseReference prenomRef = database.getReference(root + "prenom");
-        prenomRef.setValue(prenom);
+        prenomRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                // If there's already data at this path, this username is already registered
+                if (snapshot.exists()) {
+                    signupUsernamePrompt.setText(getString(R.string.user_already_exists));
+                    signupUsernamePrompt.setTextColor(0xFFFF0000);
+                    btnSignup.setEnabled(false);
+                // Otherwise we're good
+                } else {
+                    prenomRef.setValue(prenom);
 
-        DatabaseReference nomRef = database.getReference(root + "nom");
-        nomRef.setValue(nom);
+                    DatabaseReference nomRef = database.getReference(root + "nom");
+                    nomRef.setValue(nom);
 
-        DatabaseReference roleRef = database.getReference(root + "role");
-        roleRef.setValue(role);
+                    DatabaseReference roleRef = database.getReference(root + "role");
+                    roleRef.setValue(role);
 
-        DatabaseReference passwordRef = database.getReference(root + "password");
-        passwordRef.setValue(password);
+                    DatabaseReference passwordRef = database.getReference(root + "password");
+                    passwordRef.setValue(password);
 
-        // Login automatically
-        AccountHandler.user = username;
-        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    // Login automatically
+                    AccountHandler.user = username;
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("SignupActivity", "Can't connect to database: " + error.getMessage());
+            }
+        });
     }
 }

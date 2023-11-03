@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Button;
 
 import com.example.servicenovigrad.R;
+import com.example.servicenovigrad.backend.Account;
 import com.example.servicenovigrad.backend.AccountHandler;
 import com.example.servicenovigrad.backend.FieldValidator;
 import com.example.servicenovigrad.backend.Updatable;
@@ -52,26 +53,24 @@ public class LoginActivity extends AppCompatActivity implements Updatable {
     public void attemptLogin(View view) {
         // Get password data from the database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference userRef = database.getReference("users/" + userField.getText() + "/password");
-
-        userRef.addValueEventListener(new ValueEventListener() {
+        DatabaseReference acctRef = database.getReference("users/" + userField.getText());
+        acctRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 // If this path exists
                 if (snapshot.exists()) {
+                    Account acct = snapshot.getValue(Account.class);
                     // And the passwords match
-                    if (passField.getText().toString().equals(snapshot.getValue(String.class))) {
-                        // Enter the main activity
-                        AccountHandler.user = userField.getText().toString();
-                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    if (passField.getText().toString().equals(acct.getPassword())) {
+                        startActivity(new Intent(getApplicationContext(), AccountHandler.loginAsUser(acct)));
                     }
-                    // If they don't,
+                    // If they don't
                     else {
                         passLabel.setTextColor(0xFFFF0000);
                         passLabel.setText(getString(R.string.wrong_password));
                         btnLogin.setEnabled(false);
                     }
-                // If it doesn't, the user does not exist
+                // If it doesn't
                 } else {
                     userLabel.setTextColor(0xFFFF0000);
                     userLabel.setText(getString(R.string.wrong_user));
@@ -81,7 +80,7 @@ public class LoginActivity extends AppCompatActivity implements Updatable {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("FireBase", "Cannot read data: " + error.getCode());
+                Log.d("LoginActivity", "Cannot connect to database: " + error.getMessage());
             }
         });
     }

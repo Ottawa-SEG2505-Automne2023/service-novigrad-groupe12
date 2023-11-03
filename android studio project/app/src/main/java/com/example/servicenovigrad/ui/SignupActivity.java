@@ -16,6 +16,7 @@ import com.example.servicenovigrad.R;
 import com.example.servicenovigrad.backend.AccountHandler;
 import com.example.servicenovigrad.backend.FieldValidator;
 import com.example.servicenovigrad.backend.Updatable;
+import com.example.servicenovigrad.backend.Account;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -60,43 +61,31 @@ public class SignupActivity extends AppCompatActivity implements Updatable {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         String username = signupUsername.getText().toString();
         String root = "users/" + username + "/";
-        String prenom = signupPrenom.getText().toString();
-        String nom = signupNom.getText().toString();
-        String role = roleSpinner.getSelectedItem().toString();
-        String password = signupPassword.getText().toString();
 
-        // Set values in the database, creating the account
-        DatabaseReference prenomRef = database.getReference(root + "prenom");
-        prenomRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        DatabaseReference acctRef = database.getReference(root);
+        acctRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                // If there's already data at this path, this username is already registered
                 if (snapshot.exists()) {
                     signupUsernamePrompt.setText(getString(R.string.user_already_exists));
                     signupUsernamePrompt.setTextColor(0xFFFF0000);
                     btnSignup.setEnabled(false);
-                // Otherwise we're good
                 } else {
-                    prenomRef.setValue(prenom);
+                    String prenom = signupPrenom.getText().toString();
+                    String nom = signupNom.getText().toString();
+                    String role = roleSpinner.getSelectedItem().toString();
+                    String password = signupPassword.getText().toString();
 
-                    DatabaseReference nomRef = database.getReference(root + "nom");
-                    nomRef.setValue(nom);
-
-                    DatabaseReference roleRef = database.getReference(root + "role");
-                    roleRef.setValue(role);
-
-                    DatabaseReference passwordRef = database.getReference(root + "password");
-                    passwordRef.setValue(password);
-
-                    // Login automatically
-                    AccountHandler.user = username;
+                    Account acct = new Account(username, nom, prenom, role, password);
+                    acctRef.setValue(acct);
+                    AccountHandler.user = acct;
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("SignupActivity", "Can't connect to database: " + error.getMessage());
+                Log.d("SignupActivity", "Cannot connect to database: " + error.getMessage());
             }
         });
     }

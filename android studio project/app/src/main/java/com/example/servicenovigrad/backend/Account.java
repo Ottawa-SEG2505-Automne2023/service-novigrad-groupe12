@@ -1,6 +1,6 @@
 package com.example.servicenovigrad.backend;
 
-public class Account {
+public class Account implements Comparable<Account> {
     private String username;
     private String nom;
     private String prenom;
@@ -25,4 +25,9 @@ public class Account {
     public void setPrenom(String v) {this.prenom = v;}
     public void setRole(String v) {this.role = v;}
     public void setPassword(String v) {this.password = v;}
+
+    // Comparison method for ordering in a PriorityQueue (simply use String.compareTo on the roles)
+    public int compareTo(Account b) {
+        return -role.compareTo(b.role);
+    }
 }

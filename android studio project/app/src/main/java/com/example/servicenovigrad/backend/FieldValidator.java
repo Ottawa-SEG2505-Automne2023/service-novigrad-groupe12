@@ -4,8 +4,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 // TextWatcher that validates usernames & passwords as they're entered into their respective fields
 public class FieldValidator implements TextWatcher {
     // A String of allowed special characters

@@ -1,8 +1,5 @@
 package com.example.servicenovigrad.backend;
 
-import static androidx.core.content.ContextCompat.startActivity;
-
-import android.content.Intent;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -17,24 +14,29 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.PriorityQueue;
+import java.util.TreeMap;
 
 public class AccountHandler {
     public static Account user;
-    private static FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private static DatabaseReference usersRef = database.getReference("users");
-    private static ArrayList<Account> users = new ArrayList<>();
+    private static final FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private static final DatabaseReference usersRef = database.getReference("users");
+    private static final ArrayList<Account> users = new ArrayList<>();
+    private static final TreeMap<String, DataModifiedHook> onUsersModifiedEvents = new TreeMap<>();
 
-    public static Class loginAsUser(Account account) {
+    // Logs in as a user (returns which activity to launch)
+    public static Class<?> loginAsUser(Account account) {
         user = account;
-        if (user.getRole().equals("administrateur")) {
-            // Admin login
 
+        // Admin login
+        if (user.getRole().equals("administrateur")) {
             // Populate the user queue & update it when it changes
             usersRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     // Clear old user list
-                    users = new ArrayList<>();
+                    users.clear();
+
+                    // Repopulate
                     for (DataSnapshot user : snapshot.getChildren()) {
                         PriorityQueue<Account> userQueue = new PriorityQueue<>();
                         // Only get accounts that are not the one we just logged into
@@ -45,6 +47,11 @@ public class AccountHandler {
                         while (!userQueue.isEmpty()) {
                             users.add(userQueue.remove());
                         }
+                    }
+
+                    // Call onModifiedEvents
+                    for (DataModifiedHook hook : onUsersModifiedEvents.values()) {
+                        hook.call();
                     }
                 }
 
@@ -59,5 +66,29 @@ public class AccountHandler {
         }
         // Other login
         return MainActivity.class;
+    }
+
+    // Returns the users list
+    public static ArrayList<Account> getUserList() {
+        return users;
+    }
+
+    // Add a hook to the targeted map
+    public static void addOnModifiedEvent(String target, DataModifiedHook hook) {
+        if (target.equals("users")) {
+            onUsersModifiedEvents.put(hook.getKey(), hook);
+        }
+    }
+
+    // Removes a hook from the targeted map
+    public static void removeOnModifiedEvent(String target, String key) {
+        if (target.equals("users")) {
+            onUsersModifiedEvents.remove(key);
+        }
+    }
+
+    // Deletes a specific user from the database
+    public static void deleteUser(Account account) {
+        usersRef.child(account.getUsername()).removeValue();
     }
 }

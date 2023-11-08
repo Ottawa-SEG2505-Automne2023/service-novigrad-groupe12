@@ -34,21 +34,21 @@ public class SignupActivity extends AppCompatActivity implements Updatable {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
-        roleSpinner = (Spinner) findViewById(R.id.roleSpinner);
+        roleSpinner = findViewById(R.id.roleSpinner);
 
-        signupUsername = (EditText) findViewById(R.id.signupUsername);
-        signupUsernamePrompt = (TextView) findViewById(R.id.signupUsernamePrompt);
+        signupUsername = findViewById(R.id.signupUsername);
+        signupUsernamePrompt = findViewById(R.id.signupUsernamePrompt);
         signupUsername.addTextChangedListener(new FieldValidator(this, signupUsernamePrompt, "Nom d'utilisateur"));
 
         // No need to validate names, there could be all sorts of special characters for all we know!
-        signupPrenom = (EditText) findViewById(R.id.signupPrenom);
-        signupNom = (EditText) findViewById(R.id.signupNom);
+        signupPrenom = findViewById(R.id.signupPrenom);
+        signupNom = findViewById(R.id.signupNom);
 
-        signupPassword = (EditText) findViewById(R.id.signupPassword);
-        signupPasswordPrompt = (TextView) findViewById(R.id.signupPasswordPrompt);
+        signupPassword = findViewById(R.id.signupPassword);
+        signupPasswordPrompt = findViewById(R.id.signupPasswordPrompt);
         signupPassword.addTextChangedListener(new FieldValidator(this, signupPasswordPrompt, "Mot de passe"));
 
-        btnSignup = (Button) findViewById(R.id.btnSignup);
+        btnSignup = findViewById(R.id.btnSignup);
     }
 
     // Conditionally enable the button
@@ -79,13 +79,15 @@ public class SignupActivity extends AppCompatActivity implements Updatable {
                     Account acct = new Account(username, nom, prenom, role, password);
                     acctRef.setValue(acct);
                     AccountHandler.user = acct;
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    startActivity(new Intent(getApplicationContext(), AccountHandler.loginAsUser(acct)));
                 }
+                acctRef.removeEventListener(this);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.d("SignupActivity", "Cannot connect to database: " + error.getMessage());
+                acctRef.removeEventListener(this);
             }
         });
     }

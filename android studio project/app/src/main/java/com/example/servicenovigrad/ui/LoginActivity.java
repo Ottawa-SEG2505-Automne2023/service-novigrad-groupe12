@@ -33,15 +33,15 @@ public class LoginActivity extends AppCompatActivity implements Updatable {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
 
-        userField = (EditText) findViewById(R.id.loginUsernameInput);
-        userLabel = (TextView) findViewById(R.id.loginUsernamePrompt);
+        userField = findViewById(R.id.loginUsernameInput);
+        userLabel = findViewById(R.id.loginUsernamePrompt);
         userField.addTextChangedListener(new FieldValidator(this, userLabel, "Nom d'utilisateur"));
 
-        passField = (EditText) findViewById(R.id.loginPasswordInput);
-        passLabel = (TextView) findViewById(R.id.loginPasswordPrompt);
+        passField = findViewById(R.id.loginPasswordInput);
+        passLabel = findViewById(R.id.loginPasswordPrompt);
         passField.addTextChangedListener(new FieldValidator(this, passLabel, "Mot de passe"));
 
-        btnLogin = (Button) findViewById(R.id.loginButton);
+        btnLogin = findViewById(R.id.loginButton);
     }
 
     // Enables/disables the login button depending on the states of the input fields
@@ -60,6 +60,7 @@ public class LoginActivity extends AppCompatActivity implements Updatable {
                 // If this path exists
                 if (snapshot.exists()) {
                     Account acct = snapshot.getValue(Account.class);
+                    assert acct != null;
                     // And the passwords match
                     if (passField.getText().toString().equals(acct.getPassword())) {
                         startActivity(new Intent(getApplicationContext(), AccountHandler.loginAsUser(acct)));
@@ -76,11 +77,13 @@ public class LoginActivity extends AppCompatActivity implements Updatable {
                     userLabel.setText(getString(R.string.wrong_user));
                     btnLogin.setEnabled(false);
                 }
+                acctRef.removeEventListener(this);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.d("LoginActivity", "Cannot connect to database: " + error.getMessage());
+                acctRef.removeEventListener(this);
             }
         });
     }

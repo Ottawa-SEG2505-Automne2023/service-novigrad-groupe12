@@ -1,9 +1,11 @@
 package com.example.servicenovigrad.ui;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +17,15 @@ import com.example.servicenovigrad.backend.Account;
 import com.example.servicenovigrad.backend.AccountHandler;
 import com.example.servicenovigrad.backend.AdminUserAdapter;
 import com.example.servicenovigrad.backend.DataModifiedHook;
+import com.example.servicenovigrad.backend.ServiceForm;
+import com.example.servicenovigrad.backend.ServicesHandler;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AdminMainActivity extends AppCompatActivity {
     ListView usersListView;
@@ -40,6 +51,33 @@ public class AdminMainActivity extends AppCompatActivity {
                         usersListView.setAdapter(new AdminUserAdapter(AdminMainActivity.this,AccountHandler.getUserList())),
                         "AdminMainActivity-UpdateUsersList")
         );
+
+        /*
+        ServiceForm s = new ServiceForm();
+        s.setName("A");
+        s.addTextField("A");
+        s.addNumberField("B");
+        List<String> spinnerElements = new ArrayList<>();
+        spinnerElements.add("elem 1");
+        spinnerElements.add("elem 2");
+        spinnerElements.add("elem 3");
+        s.addSpinner("C", spinnerElements);
+        ServicesHandler.addService(s);
+         */
+
+        /*
+        FirebaseDatabase.getInstance().getReference("globalServices/A").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Log.d("FORM RETRIEVAL", snapshot.getValue(ServiceForm.class).getElements().toString());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+         */
     }
 
     @Override

@@ -12,10 +12,10 @@ import android.widget.TextView;
 import android.widget.Button;
 
 import com.example.servicenovigrad.R;
-import com.example.servicenovigrad.backend.Account;
-import com.example.servicenovigrad.backend.AccountHandler;
-import com.example.servicenovigrad.backend.FieldValidator;
-import com.example.servicenovigrad.backend.Updatable;
+import com.example.servicenovigrad.backend.account.Account;
+import com.example.servicenovigrad.backend.DatabaseHandler;
+import com.example.servicenovigrad.backend.account.UserPassValidator;
+import com.example.servicenovigrad.backend.util.Updatable;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -33,13 +33,14 @@ public class LoginActivity extends AppCompatActivity implements Updatable {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
 
+        // Gather views
         userField = findViewById(R.id.loginUsernameInput);
         userLabel = findViewById(R.id.loginUsernamePrompt);
-        userField.addTextChangedListener(new FieldValidator(this, userLabel, "Nom d'utilisateur"));
+        userField.addTextChangedListener(new UserPassValidator(this, userLabel, "Nom d'utilisateur"));
 
         passField = findViewById(R.id.loginPasswordInput);
         passLabel = findViewById(R.id.loginPasswordPrompt);
-        passField.addTextChangedListener(new FieldValidator(this, passLabel, "Mot de passe"));
+        passField.addTextChangedListener(new UserPassValidator(this, passLabel, "Mot de passe"));
 
         btnLogin = findViewById(R.id.loginButton);
     }
@@ -63,7 +64,7 @@ public class LoginActivity extends AppCompatActivity implements Updatable {
                     assert acct != null;
                     // And the passwords match
                     if (passField.getText().toString().equals(acct.getPassword())) {
-                        startActivity(new Intent(getApplicationContext(), AccountHandler.loginAsUser(acct)));
+                        startActivity(new Intent(getApplicationContext(), DatabaseHandler.loginAsUser(acct)));
                     }
                     // If they don't
                     else {

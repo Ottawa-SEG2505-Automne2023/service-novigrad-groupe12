@@ -1,4 +1,4 @@
-package com.example.servicenovigrad.backend;
+package com.example.servicenovigrad.backend.util;
 
 public interface Updatable {
         // Simple update method

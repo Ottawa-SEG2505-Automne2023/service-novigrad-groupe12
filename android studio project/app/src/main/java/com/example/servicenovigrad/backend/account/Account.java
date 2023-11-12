@@ -1,4 +1,4 @@
-package com.example.servicenovigrad.backend;
+package com.example.servicenovigrad.backend.account;
 
 public class Account implements Comparable<Account> {
     private String username;
@@ -34,7 +34,7 @@ public class Account implements Comparable<Account> {
     // Comparison method for ordering in a PriorityQueue (In non-matching non-admin cases, uses String.compareTo on the roles)
     // admin > employee > client
     public int compareTo(Account b) {
-        if (role.equals(b.role)) {return 0;}
+        if (role.equals(b.role)) {return nom.compareTo(b.nom);}
 
         if (role.toLowerCase().charAt(0) == 'a') {return 1;}
         else if (b.role.toLowerCase().charAt(0) == 'a') {return -1;}

@@ -1,16 +1,17 @@
 package com.example.servicenovigrad.ui;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
 
 import com.example.servicenovigrad.R;
 
-public class MainActivity extends WelcomeActivity {
+// Currently a placeholder
+public class FillFormActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        welcomeText = findViewById(R.id.mainWelcomeText);
+        setContentView(R.layout.activity_fill_form);
     }
 }

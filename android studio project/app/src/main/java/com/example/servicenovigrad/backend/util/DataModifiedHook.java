@@ -1,4 +1,4 @@
-package com.example.servicenovigrad.backend;
+package com.example.servicenovigrad.backend.util;
 
 public class DataModifiedHook {
     private final Callable method;

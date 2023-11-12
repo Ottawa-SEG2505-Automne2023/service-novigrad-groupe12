@@ -12,10 +12,23 @@
     <string name="user_already_exists">Ce nom d\'utilisateur est déjà utilisé</string>
     <string name="admin_delete_user">Supprimer compte</string>
     <string name="admin_confirm_delete_user">Etes-vous sûr que vous voulez supprimer le compte suivant?</string>
+    <string name="admin_manage_users">Gère les comptes</string>
+    <string name="admin_manage_services">Gère les services</string>
+    <string name="admin_edit_service">Modifier le service</string>
+    <string name="admin_delete_service">Supprimer le service</string>
+    <string name="admin_create_service">Créer un service</string>
+    <string name="admin_add_element">Ajouter un</string>
+    <string name="service_name">Nom du service</string>
+    <string name="save">Sauvegarder</string>
     <string name="oui">Oui</string>
     <string name="non">Non</string>
     <string-array name="signup_roles">
         <item>Client</item>
         <item>Employé de la succursale</item>
+    </string-array>
+    <string-array name="form_elements">
+        <item>TextField</item>
+        <item>NumberField</item>
+        <item>Spinner</item>
     </string-array>
 </resources>

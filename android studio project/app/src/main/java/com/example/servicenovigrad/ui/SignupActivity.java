@@ -13,10 +13,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.servicenovigrad.R;
-import com.example.servicenovigrad.backend.AccountHandler;
-import com.example.servicenovigrad.backend.FieldValidator;
-import com.example.servicenovigrad.backend.Updatable;
-import com.example.servicenovigrad.backend.Account;
+import com.example.servicenovigrad.backend.DatabaseHandler;
+import com.example.servicenovigrad.backend.account.UserPassValidator;
+import com.example.servicenovigrad.backend.util.Updatable;
+import com.example.servicenovigrad.backend.account.Account;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -38,7 +38,7 @@ public class SignupActivity extends AppCompatActivity implements Updatable {
 
         signupUsername = findViewById(R.id.signupUsername);
         signupUsernamePrompt = findViewById(R.id.signupUsernamePrompt);
-        signupUsername.addTextChangedListener(new FieldValidator(this, signupUsernamePrompt, "Nom d'utilisateur"));
+        signupUsername.addTextChangedListener(new UserPassValidator(this, signupUsernamePrompt, "Nom d'utilisateur"));
 
         // No need to validate names, there could be all sorts of special characters for all we know!
         signupPrenom = findViewById(R.id.signupPrenom);
@@ -46,7 +46,7 @@ public class SignupActivity extends AppCompatActivity implements Updatable {
 
         signupPassword = findViewById(R.id.signupPassword);
         signupPasswordPrompt = findViewById(R.id.signupPasswordPrompt);
-        signupPassword.addTextChangedListener(new FieldValidator(this, signupPasswordPrompt, "Mot de passe"));
+        signupPassword.addTextChangedListener(new UserPassValidator(this, signupPasswordPrompt, "Mot de passe"));
 
         btnSignup = findViewById(R.id.btnSignup);
     }
@@ -78,8 +78,8 @@ public class SignupActivity extends AppCompatActivity implements Updatable {
 
                     Account acct = new Account(username, nom, prenom, role, password);
                     acctRef.setValue(acct);
-                    AccountHandler.user = acct;
-                    startActivity(new Intent(getApplicationContext(), AccountHandler.loginAsUser(acct)));
+                    DatabaseHandler.user = acct;
+                    startActivity(new Intent(getApplicationContext(), DatabaseHandler.loginAsUser(acct)));
                 }
                 acctRef.removeEventListener(this);
             }

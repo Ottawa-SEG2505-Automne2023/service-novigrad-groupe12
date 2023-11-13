@@ -19,6 +19,9 @@
     <string name="admin_create_service">Créer un service</string>
     <string name="admin_add_element">Ajouter un</string>
     <string name="service_name">Nom du service</string>
+    <string name="limit">Limite de caractères</string>
+    <string name="number">Nombre</string>
+    <string name="validator">Validateur</string>
     <string name="save">Sauvegarder</string>
     <string name="oui">Oui</string>
     <string name="non">Non</string>
@@ -28,7 +31,12 @@
     </string-array>
     <string-array name="form_elements">
         <item>TextField</item>
-        <item>NumberField</item>
         <item>Spinner</item>
+    </string-array>
+    <string-array name="field_validators">
+        <item>Base</item>
+        <item>Username/Password</item>
+        <item>Nom</item>
+        <item>Nombre</item>
     </string-array>
 </resources>

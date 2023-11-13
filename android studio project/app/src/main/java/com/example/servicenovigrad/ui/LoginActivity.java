@@ -14,7 +14,7 @@ import android.widget.Button;
 import com.example.servicenovigrad.R;
 import com.example.servicenovigrad.backend.account.Account;
 import com.example.servicenovigrad.backend.DatabaseHandler;
-import com.example.servicenovigrad.backend.account.UserPassValidator;
+import com.example.servicenovigrad.backend.util.validators.UserPassValidator;
 import com.example.servicenovigrad.backend.util.Updatable;
 
 import com.google.firebase.database.DataSnapshot;

@@ -3,8 +3,6 @@ package com.example.servicenovigrad.backend.services;
 import android.app.Activity;
 import android.content.Intent;
 
-import com.example.servicenovigrad.backend.services.formdata.ExtraFormData;
-import com.example.servicenovigrad.backend.services.formdata.SpinnerData;
 import com.example.servicenovigrad.ui.FillFormActivity;
 import com.example.servicenovigrad.ui.admin.EditFormActivity;
 
@@ -30,11 +28,8 @@ public class ServiceForm {
     public void addTextField(String label) {
         addElement(ElementType.TEXTFIELD, label, null);
     }
-    public void addNumberField(String label) {
-        addElement(ElementType.NUMBERFIELD, label, null);
-    }
     public void addSpinner(String label, ArrayList<String> elements) {
-        addElement(ElementType.SPINNER, label, new SpinnerData(elements));
+        addElement(ElementType.SPINNER, label, new ExtraFormData(elements));
     }
     private void addElement(ElementType type, String label, ExtraFormData extra) {
         elements.add(new FormElement(type, label, extra));

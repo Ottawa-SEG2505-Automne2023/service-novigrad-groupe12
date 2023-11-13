@@ -1,2 +1,5 @@
 Validate name fields in SignupActivity
-Finish Service stuff
+
+Finish element deletion button for textfields
+Add spinner elements to service creator
+Cleanup

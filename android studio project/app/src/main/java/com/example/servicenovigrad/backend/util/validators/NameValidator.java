@@ -1,14 +1,13 @@
-package com.example.servicenovigrad.backend.services.formdata;
+package com.example.servicenovigrad.backend.util.validators;
 
 import android.widget.TextView;
 
-import com.example.servicenovigrad.backend.account.UserPassValidator;
 import com.example.servicenovigrad.backend.util.Updatable;
 
 // Validates service names
-public class ServiceNameValidator extends UserPassValidator {
+public class NameValidator extends UserPassValidator {
     protected String validSpecials = super.validSpecials + " ";
-    public ServiceNameValidator(Updatable origin, TextView fieldLabel, String type) {
+    public NameValidator(Updatable origin, TextView fieldLabel, String type) {
         super(origin, fieldLabel, type);
     }
 

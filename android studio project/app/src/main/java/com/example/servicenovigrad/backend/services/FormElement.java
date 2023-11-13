@@ -1,7 +1,5 @@
 package com.example.servicenovigrad.backend.services;
 
-import com.example.servicenovigrad.backend.services.formdata.ExtraFormData;
-
 // Stores information on an element of a ServiceForm
 public class FormElement {
     private ElementType type;

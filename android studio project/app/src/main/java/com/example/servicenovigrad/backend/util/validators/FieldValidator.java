@@ -1,8 +1,10 @@
-package com.example.servicenovigrad.backend.util;
+package com.example.servicenovigrad.backend.util.validators;
 
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.TextView;
+
+import com.example.servicenovigrad.backend.util.Updatable;
 
 // TextWatcher that validates text fields as they're entered into their respective fields to ensure they have characters
 public class FieldValidator implements TextWatcher {

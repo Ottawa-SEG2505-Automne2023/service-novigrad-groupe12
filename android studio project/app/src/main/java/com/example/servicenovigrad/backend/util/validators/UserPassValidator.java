@@ -2,7 +2,6 @@ package com.example.servicenovigrad.backend.util.validators;
 
 import android.widget.TextView;
 
-import com.example.servicenovigrad.backend.util.validators.FieldValidator;
 import com.example.servicenovigrad.backend.util.Updatable;
 
 // TextWatcher that validates usernames & passwords as they're entered into their respective fields

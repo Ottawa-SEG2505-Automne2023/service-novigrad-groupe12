@@ -13,7 +13,7 @@ import java.util.List;
 public class ExtraFormData {
     private int charLimit;
     private int validatorClass;
-    private List<String> elements = new ArrayList<>();
+    private final List<String> elements = new ArrayList<>();
     public ExtraFormData() {}
     public ExtraFormData(List<String> elements) {setElements(elements);}
     public int getCharLimit() {return charLimit;}

@@ -1,5 +1,6 @@
 package com.example.servicenovigrad.ui.admin;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -7,7 +8,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -24,13 +26,12 @@ import com.example.servicenovigrad.backend.util.validators.NameValidator;
 import com.example.servicenovigrad.backend.util.Updatable;
 
 import java.util.List;
+import java.util.TreeMap;
 
 public class EditFormActivity extends AppCompatActivity implements Updatable {
     private RecyclerView list;
     private Spinner typeSpinner;
-    private Button addButton;
     private Button saveButton;
-    private TextView namePrompt;
     private EditText nameField;
     private ServiceForm service;
 
@@ -42,9 +43,10 @@ public class EditFormActivity extends AppCompatActivity implements Updatable {
         // Get things
         list = findViewById(R.id.elementList);
         typeSpinner = findViewById(R.id.typeSpinner);
-        addButton = findViewById(R.id.addElementButton);
+        Button addButton = findViewById(R.id.addElementButton);
         saveButton = findViewById(R.id.saveServiceButton);
-        namePrompt = findViewById(R.id.serviceNamePrompt);
+        Button deleteButton = findViewById(R.id.deleteServiceButton);
+        TextView namePrompt = findViewById(R.id.serviceNamePrompt);
         nameField = findViewById(R.id.serviceNameField);
 
         // If the opened form exists in the database, load its data
@@ -63,9 +65,6 @@ public class EditFormActivity extends AppCompatActivity implements Updatable {
 
         // Button that adds elements to the form
         addButton.setOnClickListener(v -> {
-            // Compile everything up until now to the ServiceForm
-            compileForm();
-
             // Get the type of the element to add
             ElementType type;
             switch (typeSpinner.getSelectedItem().toString()) {
@@ -85,14 +84,18 @@ public class EditFormActivity extends AppCompatActivity implements Updatable {
             element.setType(type);
             service.getElements().add(element);
 
-            // Refresh the display
+            // Refresh the display (scroll to bottom to ensure holder is properly binded and added to TreeMap)
+            list.smoothScrollToPosition(service.getElements().size());
             list.getAdapter().notifyItemInserted(service.getElements().size());
         });
 
         // Saving the form to the database
         saveButton.setOnClickListener(v -> {compileForm(); DatabaseHandler.addService(service); finish();});
 
-        // Viasual stuff for the RecyclerView
+        // Deleting the form from the database
+        deleteButton.setOnClickListener(v -> showFormDeletionConfirmation(service));
+
+        // Visual stuff for the RecyclerView
         list.setLayoutManager(new LinearLayoutManager(this));
         DividerItemDecoration spacer = new DividerItemDecoration(list.getContext(), DividerItemDecoration.VERTICAL);
         spacer.getDrawable().setColorFilter(0xFF000000, PorterDuff.Mode.SRC_OVER);
@@ -103,7 +106,7 @@ public class EditFormActivity extends AppCompatActivity implements Updatable {
     public void onStart() {
         super.onStart();
         // Set up the display
-        list.setAdapter(new EditFormElementAdapter(EditFormActivity.this, service.getElements()));
+        list.setAdapter(new EditFormElementAdapter(service.getElements()));
     }
 
     @Override
@@ -114,34 +117,66 @@ public class EditFormActivity extends AppCompatActivity implements Updatable {
 
     public void compileForm() {
         EditFormElementAdapter adapter = (EditFormElementAdapter) list.getAdapter();
-        // Prevent a NullPointerException
-        if (adapter.getItemCount() == 0) {return;}
+        List<FormElement> elements = service.getElements();
+        TreeMap<FormElement, EditFormElementAdapter.BaseHolder> holders = adapter.getHolders();
 
         // Save each element
-        List<FormElement> elements = service.getElements();
-        List<EditFormElementAdapter.BaseHolder> holders = adapter.getHolders();
-        for (int i = 0; i < adapter.getItemCount(); i++) {
-            int type = adapter.getItemViewType(i);
+        for (int i = 0; i < holders.size(); i++) {
+            FormElement elem = elements.get(i);
             ExtraFormData extra = new ExtraFormData();
-            EditFormElementAdapter.BaseHolder baseHolder = holders.get(i);
-            if (baseHolder == null) {
-                Log.d("GIASFELFEBREHBER3", "TRUE: " + i); continue;}
+            EditFormElementAdapter.BaseHolder baseHolder = holders.get(elem);
 
             // TextField
-            if (type == 1) {
-                EditFormElementAdapter.FieldViewHolder holder = (EditFormElementAdapter.FieldViewHolder) baseHolder;
-                extra.setCharLimit(holder.getLimit());
-                extra.setValidatorClass(holder.getValidator());
+            if (elem.getType() == ElementType.TEXTFIELD) {
+                if (!(baseHolder instanceof EditFormElementAdapter.DocumentViewHolder)) {
+                    EditFormElementAdapter.FieldViewHolder holder = (EditFormElementAdapter.FieldViewHolder) baseHolder;
+                    extra.setCharLimit(holder.getLimit());
+                    extra.setValidatorClass(holder.getValidator());
+                }
             }
             // Spinner
-            else if (type == 0) {
+            else if (elem.getType() == ElementType.SPINNER) {
                 EditFormElementAdapter.SpinnerViewHolder holder = (EditFormElementAdapter.SpinnerViewHolder) baseHolder;
                 extra.setElements(holder.getElements());
             }
 
-            elements.get(i).setLabel(baseHolder.getName());
-            elements.get(i).setExtra(extra);
+            elem.setLabel(baseHolder.getName());
+            elem.setExtra(extra);
         }
         service.setName(nameField.getText().toString());
+    }
+
+    // Very similar to AdminAccountManageActivity's showAccountDeletionConfirmation
+    public void showFormDeletionConfirmation(ServiceForm s) {
+        // Creating the layout inflater
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.confirm_account_deletion, null);
+        dialogBuilder.setView(dialogView);
+
+        // Setting layout-specific values
+        TextView prompt = dialogView.findViewById(R.id.textView4);
+        prompt.setText(R.string.admin_confirm_delete_form);
+
+        TextView accountDisplay = dialogView.findViewById(R.id.accountDisplayText);
+        String accountInfo = s.getName();
+        accountDisplay.setText(accountInfo);
+
+        Button yes = dialogView.findViewById(R.id.confirmDelete);
+        Button no  = dialogView.findViewById(R.id.declineDelete);
+
+        // Show the warning dialog
+        dialogBuilder.setTitle("Confirmation");
+        AlertDialog b = dialogBuilder.create();
+        b.show();
+
+        // Button event listeners
+        yes.setOnClickListener(v -> {
+            DatabaseHandler.deleteService(s);
+            b.dismiss();
+            finish();
+        });
+
+        no.setOnClickListener(v -> b.dismiss());
     }
 }

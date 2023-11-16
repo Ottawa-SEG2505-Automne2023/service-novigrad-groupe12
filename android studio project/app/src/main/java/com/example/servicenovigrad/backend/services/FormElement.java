@@ -1,7 +1,7 @@
 package com.example.servicenovigrad.backend.services;
 
 // Stores information on an element of a ServiceForm
-public class FormElement {
+public class FormElement implements Comparable<FormElement> {
     private ElementType type;
     private String label;
     private ExtraFormData extra;
@@ -17,4 +17,6 @@ public class FormElement {
     public ElementType getType() {return type;}
     public String getLabel() {return label;}
     public ExtraFormData getExtra() {return extra;}
+    // Added purely for compatibility as a key of a TreeMap
+    public int compareTo(FormElement b) {return toString().compareTo(b.toString());}
 }

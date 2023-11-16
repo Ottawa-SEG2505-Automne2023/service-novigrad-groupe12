@@ -79,13 +79,25 @@
 
     <Button
         android:id="@+id/saveServiceButton"
-        android:layout_width="wrap_content"
+        android:layout_width="180dp"
         android:layout_height="wrap_content"
         android:text="@string/save"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/deleteServiceButton"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/typeSpinner"
         app:layout_constraintVertical_bias="0.5" />
+
+    <Button
+        android:id="@+id/deleteServiceButton"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:text="@string/admin_delete_service"
+        app:layout_constraintBottom_toBottomOf="@+id/saveServiceButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/saveServiceButton"
+        app:layout_constraintTop_toTopOf="@+id/saveServiceButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,7 +1,6 @@
 package com.example.servicenovigrad.backend.services;
 
 import android.annotation.SuppressLint;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,15 +17,14 @@ import com.example.servicenovigrad.backend.util.Callable;
 import com.example.servicenovigrad.backend.util.validators.NameValidator;
 import com.example.servicenovigrad.ui.admin.EditFormActivity;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.TreeMap;
 
 public class EditFormElementAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private final EditFormActivity context;
     private final List<FormElement> elements;
-    private final List<BaseHolder> holders = new ArrayList<>();
+    private final TreeMap<FormElement, BaseHolder> holders = new TreeMap<>();
 
     // All ViewHolders have a delete button
     // NOTE: name fields can be left blank on purpose!! This is by design!! DO NOT DOCK MY MARKS FOR THIS!
@@ -69,13 +67,12 @@ public class EditFormElementAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     public static class SpinnerViewHolder extends BaseHolder {
-        private final TextView elemsPrompt;
         private final EditText elemsField;
         public SpinnerViewHolder(View view) {
             super(view);
             namePrompt = view.findViewById(R.id.spinnerNamePrompt);
             nameField = view.findViewById(R.id.spinnerNameField);
-            elemsPrompt = view.findViewById(R.id.elemsPrompt);
+            TextView elemsPrompt = view.findViewById(R.id.elemsPrompt);
             elemsField = view.findViewById(R.id.elemsField);
             del = view.findViewById(R.id.deleteButton2);
 
@@ -105,12 +102,10 @@ public class EditFormElementAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     /**
      * Initialize the dataset of the Adapter
      *
-     * @param context EditFormActivity from which this adapter is being used
      * @param elements List<FormElement> containing the data to populate views to be used
      * by RecyclerView
      */
-    public EditFormElementAdapter(EditFormActivity context, List<FormElement> elements) {
-        this.context = context;
+    public EditFormElementAdapter(List<FormElement> elements) {
         this.elements = elements;
     }
 
@@ -119,13 +114,15 @@ public class EditFormElementAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         // SPINNERS = 0
         // FIELDS = 1
         // DOCUMENTS = 2
-        if (elements.get(position).getType() == ElementType.SPINNER) {
-            return 0;
+        switch (elements.get(position).getType()) {
+            case SPINNER:
+                return 0;
+            case DOCUMENT:
+                return 2;
+            default:
+                // TEXTFIELD
+                return 1;
         }
-        else if (elements.get(position).getType() == ElementType.TEXTFIELD) {
-            return 1;
-        }
-        return 2;
     }
 
     // Create new views (invoked by the layout manager)
@@ -137,21 +134,15 @@ public class EditFormElementAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         View view;
         if (viewType == 0) {
             view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.spinner_element_editor_layout, viewGroup, false);
-            SpinnerViewHolder holder = new SpinnerViewHolder(view);
-            holders.add(holder);
-            return holder;
+            return new SpinnerViewHolder(view);
         }
         if (viewType == 1) {
             view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.field_element_editor_layout, viewGroup, false);
-            FieldViewHolder holder = new FieldViewHolder(view);
-            holders.add(holder);
-            return holder;
+            return new FieldViewHolder(view);
         }
         else {
             view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.document_element_editor_layout, viewGroup, false);
-            DocumentViewHolder holder = new DocumentViewHolder(view);
-            holders.add(holder);
-            return holder;
+            return new DocumentViewHolder(view);
         }
     }
 
@@ -170,6 +161,7 @@ public class EditFormElementAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         // TextField
         if (elem.getType() == ElementType.TEXTFIELD) {
             FieldViewHolder holder = (FieldViewHolder) viewHolder;
+            holders.put(elem, holder);
 
             if (extra != null) {
                 holder.limitField.setText(String.valueOf(extra.getCharLimit()));
@@ -182,6 +174,7 @@ public class EditFormElementAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         // Spinner
         else if (elem.getType() == ElementType.SPINNER) {
             SpinnerViewHolder holder = (SpinnerViewHolder) viewHolder;
+            holders.put(elem, holder);
 
             if (extra != null) {
                 String str = extra.getElements().toString();
@@ -189,6 +182,11 @@ public class EditFormElementAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             } else {
                 holder.elemsField.setText("");
             }
+        }
+        // Document
+        else {
+            DocumentViewHolder holder = (DocumentViewHolder) viewHolder;
+            holders.put(elem, holder);
         }
 
         // For all holder types
@@ -200,13 +198,10 @@ public class EditFormElementAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
         // The delete button
         baseHolder.setDeleteMethod(v -> {
-            elements.get(position).setExtra(null);
-            elements.remove(position);
-            holders.remove(position);
+            holders.remove(elem);
+            elements.remove(elem);
             notifyItemRemoved(position);
-            if (position == 0) {notifyDataSetChanged();}
-            else {notifyItemRangeChanged(position, elements.size());}
-            context.compileForm();
+            notifyItemRangeChanged(position, elements.size());
         });
     }
 
@@ -216,5 +211,5 @@ public class EditFormElementAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         return elements.size();
     }
 
-    public List<BaseHolder> getHolders() {return holders;}
+    public TreeMap<FormElement, BaseHolder> getHolders() {return holders;}
 }

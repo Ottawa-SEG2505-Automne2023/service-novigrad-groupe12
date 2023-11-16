@@ -27,17 +27,6 @@ public class ServiceForm {
     public String getName() {return name;}
     public String getId() {return id;}
 
-    // ADDING ELEMENTS TO THE FORM
-    public void addTextField(String label) {
-        addElement(ElementType.TEXTFIELD, label, null);
-    }
-    public void addSpinner(String label, ArrayList<String> elements) {
-        addElement(ElementType.SPINNER, label, new ExtraFormData(elements));
-    }
-    private void addElement(ElementType type, String label, ExtraFormData extra) {
-        elements.add(new FormElement(type, label, extra));
-    }
-
     // OPENING THE FORM
     public void open(Activity context, String mode) {
         Intent intent;

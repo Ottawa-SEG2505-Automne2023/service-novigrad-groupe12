@@ -12,6 +12,7 @@
     <string name="user_already_exists">Ce nom d\'utilisateur est déjà utilisé</string>
     <string name="admin_delete_user">Supprimer compte</string>
     <string name="admin_confirm_delete_user">Etes-vous sûr que vous voulez supprimer le compte suivant?</string>
+    <string name="admin_confirm_delete_form">Etes-vous sûr que vous voulez supprimer le service suivant?</string>
     <string name="admin_manage_users">Gère les comptes</string>
     <string name="admin_manage_services">Gère les services</string>
     <string name="admin_edit_service">Modifier le service</string>

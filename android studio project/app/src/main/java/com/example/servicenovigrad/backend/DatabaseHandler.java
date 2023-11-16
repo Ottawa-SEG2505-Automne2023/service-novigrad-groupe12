@@ -24,12 +24,10 @@ public class DatabaseHandler {
     private static final FirebaseDatabase database = FirebaseDatabase.getInstance();
     // USER ACCOUNT STUFF
     private static final DatabaseReference usersRef = database.getReference("users");
-    private static ValueEventListener usersListener;
     private static final ArrayList<Account> users = new ArrayList<>();
     private static final TreeMap<String, DataModifiedHook> onUsersModifiedEvents = new TreeMap<>();
     // SERVICES STUFF
     private static final DatabaseReference servicesRef = database.getReference("globalServices");
-    private static ValueEventListener servicesListener;
     private static final ArrayList<ServiceForm> services = new ArrayList<>();
 
     // Logs in as a user (returns which activity to launch)
@@ -39,7 +37,7 @@ public class DatabaseHandler {
         // Admin login
         if (user.getRole().equals("administrateur")) {
             // Populate the user queue & update it when it changes
-            usersListener = usersRef.addValueEventListener(new ValueEventListener() {
+            usersRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     // Clear old user list
@@ -70,7 +68,7 @@ public class DatabaseHandler {
                 }
             });
 
-            servicesListener = servicesRef.addValueEventListener(new ValueEventListener() {
+            servicesRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     services.clear();
@@ -124,6 +122,11 @@ public class DatabaseHandler {
         else {root = servicesRef.child(s.getId());}
         s.setId(root.getKey());
         root.setValue(s);
+    }
+
+    public static void deleteService(ServiceForm s) {
+        if (s.getId() == null) {return;}
+        servicesRef.child(s.getId()).removeValue();
     }
 
     public static ArrayList<ServiceForm> getServicesList() {return services;}

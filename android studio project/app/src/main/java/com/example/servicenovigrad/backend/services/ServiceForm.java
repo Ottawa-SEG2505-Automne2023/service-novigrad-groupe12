@@ -13,6 +13,7 @@ import java.util.List;
 public class ServiceForm {
     private final List<FormElement> elements = new ArrayList<>();
     private String name = "Nouveau service";
+    private String id;
     public ServiceForm() {}
     public void setElements(List<FormElement> elements) {
         if (elements != null) {
@@ -21,8 +22,10 @@ public class ServiceForm {
         }
     }
     public void setName(String name) {this.name = name;}
+    public void setId(String id) {this.id = id;}
     public List<FormElement> getElements() {return elements;}
     public String getName() {return name;}
+    public String getId() {return id;}
 
     // ADDING ELEMENTS TO THE FORM
     public void addTextField(String label) {
@@ -46,7 +49,7 @@ public class ServiceForm {
             intent = new Intent(context, FillFormActivity.class);
         }
         // Attach an identifier for this object
-        intent.putExtra("form", name.trim());
+        intent.putExtra("formID", id);
         context.startActivity(intent);
     }
 }

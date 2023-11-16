@@ -1,5 +1,6 @@
 Validate name fields in SignupActivity
 
-Finish element deletion button for textfields
-Add spinner elements to service creator
+Add ability to delete services
 Cleanup
+
+Unitary tests & UML diagrams

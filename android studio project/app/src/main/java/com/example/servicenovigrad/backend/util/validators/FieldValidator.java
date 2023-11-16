@@ -14,6 +14,7 @@ public class FieldValidator implements TextWatcher {
     protected final TextView fieldLabel;
     protected final String initialText;
     protected final String errorText;
+    private boolean canBeEmpty = false;
 
     public FieldValidator(Updatable origin, TextView fieldLabel, String type) {
         this.origin = origin;
@@ -40,8 +41,11 @@ public class FieldValidator implements TextWatcher {
     // No implementation currently needed, has to be here for the implementation of the Interface
     public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
+    // Enables an empty field
+    public void allowEmpty() {canBeEmpty = true;}
+
     // Verifies that a username is valid (contains only alphanumeric characters & allowed specials)
     protected boolean validateText(CharSequence s) {
-        return s.length() > 0;
+        return canBeEmpty || s.length() > 0;
     }
 }

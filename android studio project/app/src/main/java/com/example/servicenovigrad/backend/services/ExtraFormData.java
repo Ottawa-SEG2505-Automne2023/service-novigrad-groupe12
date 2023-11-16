@@ -1,5 +1,6 @@
 package com.example.servicenovigrad.backend.services;
 
+import com.example.servicenovigrad.backend.util.validators.DateValidator;
 import com.example.servicenovigrad.backend.util.validators.FieldValidator;
 import com.example.servicenovigrad.backend.util.validators.NameValidator;
 import com.example.servicenovigrad.backend.util.validators.NumberValidator;
@@ -30,6 +31,8 @@ public class ExtraFormData {
                 return UserPassValidator.class;
             case 2:
                 return NameValidator.class;
+            case 3:
+                return DateValidator.class;
             default:
                 return NumberValidator.class;
         }

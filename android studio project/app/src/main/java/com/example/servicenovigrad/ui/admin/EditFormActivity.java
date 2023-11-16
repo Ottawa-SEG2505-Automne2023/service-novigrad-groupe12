@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -18,8 +19,7 @@ import com.example.servicenovigrad.backend.services.ElementType;
 import com.example.servicenovigrad.backend.services.FormElement;
 import com.example.servicenovigrad.backend.services.ServiceForm;
 import com.example.servicenovigrad.backend.services.ExtraFormData;
-import com.example.servicenovigrad.backend.services.FormElementAdapter;
-import com.example.servicenovigrad.backend.util.Callable;
+import com.example.servicenovigrad.backend.services.EditFormElementAdapter;
 import com.example.servicenovigrad.backend.util.validators.NameValidator;
 import com.example.servicenovigrad.backend.util.Updatable;
 
@@ -47,14 +47,13 @@ public class EditFormActivity extends AppCompatActivity implements Updatable {
         namePrompt = findViewById(R.id.serviceNamePrompt);
         nameField = findViewById(R.id.serviceNameField);
 
-        // If the opened form exists, load its data
+        // If the opened form exists in the database, load its data
         for (ServiceForm s : DatabaseHandler.getServicesList()) {
-            if (s.getName().trim().equals(getIntent().getStringExtra("form"))) {
+            if (s.getId().equals(getIntent().getStringExtra("formID"))) {
                 service = s;
                 break;
             }
         }
-
         // If not, start fresh
         if (service == null) {service = new ServiceForm();}
 
@@ -64,15 +63,21 @@ public class EditFormActivity extends AppCompatActivity implements Updatable {
 
         // Button that adds elements to the form
         addButton.setOnClickListener(v -> {
-            // Compile everything up until now
+            // Compile everything up until now to the ServiceForm
             compileForm();
 
             // Get the type of the element to add
             ElementType type;
-            if (typeSpinner.getSelectedItem().toString().equals("TextField")) {
-                type = ElementType.TEXTFIELD;
-            } else {
-                type = ElementType.SPINNER;
+            switch (typeSpinner.getSelectedItem().toString()) {
+                case "TextField":
+                    type = ElementType.TEXTFIELD;
+                    break;
+                case "Spinner":
+                    type = ElementType.SPINNER;
+                    break;
+                default:
+                    type = ElementType.DOCUMENT;
+                    break;
             }
 
             // Create it and add it to the form
@@ -80,70 +85,63 @@ public class EditFormActivity extends AppCompatActivity implements Updatable {
             element.setType(type);
             service.getElements().add(element);
 
-            // list.setAdapter(new FormElementAdapter(EditFormActivity.this, service.getElements()));
-            refreshDisplay();
+            // Refresh the display
+            list.getAdapter().notifyItemInserted(service.getElements().size());
         });
 
+        // Saving the form to the database
         saveButton.setOnClickListener(v -> {compileForm(); DatabaseHandler.addService(service); finish();});
 
+        // Viasual stuff for the RecyclerView
         list.setLayoutManager(new LinearLayoutManager(this));
         DividerItemDecoration spacer = new DividerItemDecoration(list.getContext(), DividerItemDecoration.VERTICAL);
         spacer.getDrawable().setColorFilter(0xFF000000, PorterDuff.Mode.SRC_OVER);
         list.addItemDecoration(spacer);
-
-        /*
-        // TEST
-        service.setName("TEST SERVICE");
-        FormElement a = new FormElement();
-        a.setType(ElementType.TEXTFIELD);
-        a.setLabel("NAME");
-        FieldData b = new FieldData();
-        b.setValidatorClass(2);
-        b.setCharLimit(69);
-        a.setExtra(b);
-        service.getElements().add(a);
-        Log.d("PUSHTEST", "PUSHING");
-        DatabaseHandler.addService(service);
-        Log.d("PUSHTEST", "POST-PUSH");
-
-         */
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        list.setAdapter(new FormElementAdapter(this, service.getElements()));
+        // Set up the display
+        list.setAdapter(new EditFormElementAdapter(EditFormActivity.this, service.getElements()));
     }
 
     @Override
     public void update() {
+        // Update the save button
         saveButton.setEnabled(nameField.getTextColors().getDefaultColor() != 0xFFFF0000);
     }
 
     public void compileForm() {
-        FormElementAdapter adapter = (FormElementAdapter) list.getAdapter();
+        EditFormElementAdapter adapter = (EditFormElementAdapter) list.getAdapter();
         // Prevent a NullPointerException
         if (adapter.getItemCount() == 0) {return;}
 
         // Save each element
         List<FormElement> elements = service.getElements();
+        List<EditFormElementAdapter.BaseHolder> holders = adapter.getHolders();
         for (int i = 0; i < adapter.getItemCount(); i++) {
             int type = adapter.getItemViewType(i);
+            ExtraFormData extra = new ExtraFormData();
+            EditFormElementAdapter.BaseHolder baseHolder = holders.get(i);
+            if (baseHolder == null) {
+                Log.d("GIASFELFEBREHBER3", "TRUE: " + i); continue;}
+
             // TextField
             if (type == 1) {
-                FormElementAdapter.FieldViewHolder holder = (FormElementAdapter.FieldViewHolder) list.findViewHolderForAdapterPosition(i);
-                ExtraFormData extra = new ExtraFormData();
+                EditFormElementAdapter.FieldViewHolder holder = (EditFormElementAdapter.FieldViewHolder) baseHolder;
                 extra.setCharLimit(holder.getLimit());
                 extra.setValidatorClass(holder.getValidator());
-
-                elements.get(i).setLabel(holder.getName());
-                elements.get(i).setExtra(extra);
             }
+            // Spinner
+            else if (type == 0) {
+                EditFormElementAdapter.SpinnerViewHolder holder = (EditFormElementAdapter.SpinnerViewHolder) baseHolder;
+                extra.setElements(holder.getElements());
+            }
+
+            elements.get(i).setLabel(baseHolder.getName());
+            elements.get(i).setExtra(extra);
         }
         service.setName(nameField.getText().toString());
-    }
-
-    public void refreshDisplay() {
-        list.invalidate();
     }
 }

@@ -18,6 +18,7 @@
     <string name="admin_delete_service">Supprimer le service</string>
     <string name="admin_create_service">Créer un service</string>
     <string name="admin_add_element">Ajouter un</string>
+    <string name="elements_desc">Éléments (du forme \"A, B, C\")</string>
     <string name="service_name">Nom du service</string>
     <string name="limit">Limite de caractères</string>
     <string name="number">Nombre</string>
@@ -32,11 +33,13 @@
     <string-array name="form_elements">
         <item>TextField</item>
         <item>Spinner</item>
+        <item>Document</item>
     </string-array>
     <string-array name="field_validators">
         <item>Base</item>
         <item>Username/Password</item>
         <item>Nom</item>
         <item>Nombre</item>
+        <item>Date</item>
     </string-array>
 </resources>

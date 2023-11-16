@@ -6,7 +6,7 @@ import com.example.servicenovigrad.backend.util.Updatable;
 
 // Validates service names
 public class NameValidator extends UserPassValidator {
-    protected String validSpecials = super.validSpecials + " ";
+    protected String validSpecials = super.validSpecials + ", ";
     public NameValidator(Updatable origin, TextView fieldLabel, String type) {
         super(origin, fieldLabel, type);
     }

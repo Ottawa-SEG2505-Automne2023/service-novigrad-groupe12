@@ -119,7 +119,10 @@ public class DatabaseHandler {
 
     // SERVICES METHODS
     public static void addService(ServiceForm s) {
-        DatabaseReference root = servicesRef.child(s.getName().trim());
+        DatabaseReference root;
+        if (s.getId() == null) {root = servicesRef.push();}
+        else {root = servicesRef.child(s.getId());}
+        s.setId(root.getKey());
         root.setValue(s);
     }
 

@@ -8,7 +8,7 @@ import com.example.servicenovigrad.backend.util.Updatable;
 // TextWatcher that validates usernames & passwords as they're entered into their respective fields
 public class UserPassValidator extends FieldValidator {
     // A String of allowed special characters
-    protected String validSpecials = ".!@#$%^&*-+'_";
+    protected String validSpecials = ".!@#$%^&*-+'_()";
 
     public UserPassValidator(Updatable origin, TextView fieldLabel, String type) {
         super(origin, fieldLabel, type);

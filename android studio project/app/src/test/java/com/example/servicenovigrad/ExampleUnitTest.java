@@ -25,22 +25,47 @@ public class ExampleUnitTest {
     }
 
     @Test
-    public void account_database_test(){
+    public void add_account() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        String username = "admin";
+        String username = "test";
         String root = "users/" + username + "/";
         DatabaseReference acctRef = database.getReference(root);
         Account acct = new Account(username, "nom", "prenom", "Client", "password");
-        acctRef.setValue(acct);} //regarder dans la base de donnés si le nouveau compte a été ajouté
+        acctRef.setValue(acct); //regarder dans la base de donnés si le nouveau compte a été ajouté
+        assertEquals("nom", DatabaseHandler.user.getNom());
+        assertEquals("prenom", DatabaseHandler.user.getPrenom());
+        assertEquals("Client", DatabaseHandler.user.getRole());
+        assertEquals("password", DatabaseHandler.user.getPassword());
+    }
+
     @Test
-    public void delete_Account(){;
+    public void delete_Account() {
+        ;
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        String username = "admin";
+        String username = "test";
         String root = "users/" + username + "/";
         DatabaseReference acctRef = database.getReference(root);
         Account acct = new Account(username, "nom", "prenom", "Client", "password");
         DatabaseHandler.deleteUser(acct); // regarder dans la base de donné si le nouveau compte a été enlevé (suppose que account_database_test() fonctionne)
     }
 
-
+    @Test
+    public long stress_test() {
+        int number_of_accounts=10;
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        String username = "test";
+        String root = "users/" + username + "/";
+        DatabaseReference acctRef = database.getReference(root);
+        Long start = System.currentTimeMillis();
+        for (int i = 0; i < number_of_accounts; i++) {
+            Account acct = new Account(Integer.toString(i), Integer.toString(i), Integer.toString(i), "Client", "password");
+            acctRef.setValue(acct);
+        }
+        for (int i = 0; i < number_of_accounts; i++) {
+            Account acct = new Account(Integer.toString(i), Integer.toString(i), Integer.toString(i), "Client", "password");
+            DatabaseHandler.deleteUser(acct);
+        }
+        Long end=System.currentTimeMillis();
+        return end-start;
+    }
 }

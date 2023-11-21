@@ -1,6 +1,3 @@
 Validate name fields in SignupActivity
 
-Add ability to delete services
-Cleanup
-
 Unitary tests & UML diagrams

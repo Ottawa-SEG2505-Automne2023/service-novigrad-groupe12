@@ -23,6 +23,13 @@ public class ExtraFormData {
     public void setValidatorClass(int validatorClass) {this.validatorClass = validatorClass;}
     public void setElements(List<String> elements) {this.elements.clear(); if (elements != null) {this.elements.addAll(elements);}}
 
+
+    /**
+     * Maps a position to a corresponding FieldValidator class.
+     * 
+     * @param pos The position representing a specific FieldValidator.
+     * @return The class of the FieldValidator.
+     */
     private static Class<? extends FieldValidator> positionToClass(int pos) {
         switch (pos) {
             case 0:

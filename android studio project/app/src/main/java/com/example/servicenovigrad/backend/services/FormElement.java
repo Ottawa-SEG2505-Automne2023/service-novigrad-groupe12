@@ -6,6 +6,13 @@ public class FormElement implements Comparable<FormElement> {
     private String label;
     private ExtraFormData extra;
     public FormElement() {}
+        /**
+     * Constructs a FormElement with specified type, label, and extra data.
+     *
+     * @param type  The type of the form element.
+     * @param label The label of the form element.
+     * @param extra Additional data for the form element.
+     */
     public FormElement(ElementType type, String label, ExtraFormData extra) {
         setType(type);
         setLabel(label);

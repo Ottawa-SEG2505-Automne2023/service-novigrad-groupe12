@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.example.servicenovigrad.backend.DatabaseHandler;
 import com.example.servicenovigrad.backend.account.Account;
+import com.example.servicenovigrad.backend.util.validators.UserPassValidator;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -68,4 +69,33 @@ public class ExampleUnitTest {
         Long end=System.currentTimeMillis();
         return end-start;
     }
+    public static class UserPassValidatorTest extends UserPassValidator {
+
+        public UserPassValidatorTest() {
+            super(null, null, null);
+        }
+
+        @Test
+        public void testValidateText() {
+
+            String validInput = "abc123!@"; // tester un qui est valide
+            boolean isValid = validateText(validInput);
+            assertEquals(true, isValid);
+
+            String invalidInput = "abc123$"; //tester avec un symbole qui n'est pas valide
+            isValid = validateText(invalidInput);
+            assertEquals(false, isValid);
+
+            String inputWithSpace = "user name"; //tester avec un espace
+            isValid = validateText(inputWithSpace);
+            assertEquals(false, isValid);
+
+            String alphanumericInput = "abcd1234"; //tester un  qui est valide
+            isValid = validateText(alphanumericInput);
+            assertEquals(true, isValid);
+        }
+    }
+
+
+
 }

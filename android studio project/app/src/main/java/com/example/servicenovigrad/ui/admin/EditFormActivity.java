@@ -33,6 +33,7 @@ public class EditFormActivity extends AppCompatActivity implements Updatable {
     private Spinner typeSpinner;
     private Button saveButton;
     private EditText nameField;
+    private TextView namePrompt;
     private ServiceForm service;
 
     @Override
@@ -46,7 +47,7 @@ public class EditFormActivity extends AppCompatActivity implements Updatable {
         Button addButton = findViewById(R.id.addElementButton);
         saveButton = findViewById(R.id.saveServiceButton);
         Button deleteButton = findViewById(R.id.deleteServiceButton);
-        TextView namePrompt = findViewById(R.id.serviceNamePrompt);
+        namePrompt = findViewById(R.id.serviceNamePrompt);
         nameField = findViewById(R.id.serviceNameField);
 
         // If the opened form exists in the database, load its data
@@ -106,13 +107,13 @@ public class EditFormActivity extends AppCompatActivity implements Updatable {
     public void onStart() {
         super.onStart();
         // Set up the display
-        list.setAdapter(new EditFormElementAdapter(service.getElements()));
+        list.setAdapter(new EditFormElementAdapter(this, service.getElements()));
     }
 
     @Override
     public void update() {
         // Update the save button
-        saveButton.setEnabled(nameField.getTextColors().getDefaultColor() != 0xFFFF0000);
+        saveButton.setEnabled(namePrompt.getTextColors().getDefaultColor() != 0xFFFF0000);
     }
 
     public void compileForm() {
@@ -122,20 +123,25 @@ public class EditFormActivity extends AppCompatActivity implements Updatable {
 
         // Save each element
         for (int i = 0; i < holders.size(); i++) {
-            FormElement elem = elements.get(i);
+            compileElement(adapter, holders.get(elements.get(i)), i);
+        }
+        service.setName(nameField.getText().toString());
+    }
+
+    public void compileElement(EditFormElementAdapter adapter, EditFormElementAdapter.BaseHolder baseHolder, int position) {
+        // Only compile the element if the holder isn't recycled
+        if (adapter.isEnabled(position)) {
+            FormElement elem = service.getElements().get(position);
             ExtraFormData extra = new ExtraFormData();
-            EditFormElementAdapter.BaseHolder baseHolder = holders.get(elem);
 
             // TextField
-            if (elem.getType() == ElementType.TEXTFIELD) {
-                if (!(baseHolder instanceof EditFormElementAdapter.DocumentViewHolder)) {
-                    EditFormElementAdapter.FieldViewHolder holder = (EditFormElementAdapter.FieldViewHolder) baseHolder;
-                    extra.setCharLimit(holder.getLimit());
-                    extra.setValidatorClass(holder.getValidator());
-                }
+            if (baseHolder instanceof EditFormElementAdapter.FieldViewHolder) {
+                EditFormElementAdapter.FieldViewHolder holder = (EditFormElementAdapter.FieldViewHolder) baseHolder;
+                extra.setCharLimit(holder.getLimit());
+                extra.setValidatorClass(holder.getValidator());
             }
             // Spinner
-            else if (elem.getType() == ElementType.SPINNER) {
+            else if (baseHolder instanceof EditFormElementAdapter.SpinnerViewHolder) {
                 EditFormElementAdapter.SpinnerViewHolder holder = (EditFormElementAdapter.SpinnerViewHolder) baseHolder;
                 extra.setElements(holder.getElements());
             }
@@ -143,7 +149,6 @@ public class EditFormActivity extends AppCompatActivity implements Updatable {
             elem.setLabel(baseHolder.getName());
             elem.setExtra(extra);
         }
-        service.setName(nameField.getText().toString());
     }
 
     // Very similar to AdminAccountManageActivity's showAccountDeletionConfirmation

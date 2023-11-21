@@ -1,6 +1,7 @@
 package com.example.servicenovigrad.backend.services;
 
 import android.annotation.SuppressLint;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,9 +24,6 @@ import java.util.TreeMap;
 
 public class EditFormElementAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private final List<FormElement> elements;
-    private final TreeMap<FormElement, BaseHolder> holders = new TreeMap<>();
-
     // All ViewHolders have a delete button
     // NOTE: name fields can be left blank on purpose!! This is by design!! DO NOT DOCK MY MARKS FOR THIS!
     // A blank name on a FormElement will simply cause the form builder in fill mode to not create a label for that element.
@@ -36,8 +34,10 @@ public class EditFormElementAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         protected Button del;
         public BaseHolder(@NonNull View itemView) {super(itemView);}
         public void setDeleteMethod(Callable method) {
-            del.setOnClickListener(v -> method.call(null));
+            del.setOnClickListener(v -> {del.setEnabled(false); method.call(null);});
         }
+
+        public void fixButton() {del.setEnabled(true);}
 
         public String getName() {return nameField.getText().toString();}
     }
@@ -75,10 +75,6 @@ public class EditFormElementAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             TextView elemsPrompt = view.findViewById(R.id.elemsPrompt);
             elemsField = view.findViewById(R.id.elemsField);
             del = view.findViewById(R.id.deleteButton2);
-
-            NameValidator validator = new NameValidator((EditFormActivity) view.getContext(), elemsPrompt, "List");
-            validator.allowEmpty();
-            elemsField.addTextChangedListener(validator);
         }
 
         // Returns the elements as a List
@@ -99,13 +95,19 @@ public class EditFormElementAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         }
     }
 
+    private final EditFormActivity context;
+    private final List<FormElement> elements;
+    private final TreeMap<FormElement, BaseHolder> holders = new TreeMap<>();
+    private final TreeMap<FormElement, Boolean> holdersEnabled = new TreeMap<>();
+
     /**
      * Initialize the dataset of the Adapter
      *
      * @param elements List<FormElement> containing the data to populate views to be used
      * by RecyclerView
      */
-    public EditFormElementAdapter(List<FormElement> elements) {
+    public EditFormElementAdapter(EditFormActivity context, List<FormElement> elements) {
+        this.context = context;
         this.elements = elements;
     }
 
@@ -155,6 +157,10 @@ public class EditFormElementAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         FormElement elem = elements.get(position);
         BaseHolder baseHolder = (BaseHolder) viewHolder;
 
+        // Enable the delete button & mark that this holder is not currently recycled
+        baseHolder.fixButton();
+        holdersEnabled.put(elem, true);
+
         // Update the display with data from the element
         ExtraFormData extra = elem.getExtra();
 
@@ -198,10 +204,18 @@ public class EditFormElementAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
         // The delete button
         baseHolder.setDeleteMethod(v -> {
-            holders.remove(elem);
+            holdersEnabled.put(elem, false);
+            context.compileForm();
+
             elements.remove(elem);
-            notifyItemRemoved(position);
-            notifyItemRangeChanged(position, elements.size());
+            holders.remove(elem);
+            holdersEnabled.remove(elem);
+
+            // Would technically be more efficient to use these, but I can't seem to get them to behave properly
+            // notifyItemRemoved(position);
+            // notifyItemRangeChanged(position, elements.size());
+
+            notifyDataSetChanged();
         });
     }
 
@@ -211,5 +225,17 @@ public class EditFormElementAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         return elements.size();
     }
 
+    @Override
+    public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
+        BaseHolder baseHolder = (BaseHolder) holder;
+        int pos = baseHolder.getAdapterPosition();
+        if (pos >= 0) {
+            context.compileElement(this, baseHolder, pos);
+            holdersEnabled.put(elements.get(pos), false);
+        }
+    }
+
     public TreeMap<FormElement, BaseHolder> getHolders() {return holders;}
+    // Returns false if the holder for this specific element is currently recycled
+    public boolean isEnabled(int pos) {return holdersEnabled.get(elements.get(pos));}
 }

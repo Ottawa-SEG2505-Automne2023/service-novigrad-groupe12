@@ -14,7 +14,7 @@ public class UserPassValidator extends FieldValidator {
     }
 
     // Verifies that a username is valid (contains only alphanumeric characters & allowed specials)
-    protected boolean validateText(CharSequence s) {
+    public boolean validateText(CharSequence s) {
         for (int i = 0; i < s.length(); i++) {
             if (!Character.isLetterOrDigit(s.charAt(i)) && getValidSpecials().indexOf(s.charAt(i)) == -1) {return false;}
         }

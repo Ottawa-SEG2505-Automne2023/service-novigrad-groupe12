@@ -41,4 +41,8 @@ public class ServiceForm {
         intent.putExtra("formID", id);
         context.startActivity(intent);
     }
+
+    public boolean equals(ServiceForm other) {
+        return id.equals(other.id);
+    }
 }

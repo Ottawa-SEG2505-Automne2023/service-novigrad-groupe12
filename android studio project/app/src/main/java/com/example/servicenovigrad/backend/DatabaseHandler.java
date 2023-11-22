@@ -130,4 +130,6 @@ public class DatabaseHandler {
     }
 
     public static ArrayList<ServiceForm> getServicesList() {return services;}
+
+    public static FirebaseDatabase getDatabase() {return database;}
 }

@@ -12,15 +12,17 @@ public class FieldValidator implements TextWatcher {
     // Instance variables, references to other objects & status text
     protected final Updatable origin;
     protected final TextView fieldLabel;
-    protected final String initialText;
-    protected final String errorText;
+    protected String initialText = "";
+    protected String errorText = "";
     private boolean canBeEmpty = false;
 
     public FieldValidator(Updatable origin, TextView fieldLabel, String type) {
         this.origin = origin;
         this.fieldLabel = fieldLabel;
-        initialText = fieldLabel.getText().toString();
-        errorText = type + " invalide!";
+        if (fieldLabel != null) {
+            initialText = fieldLabel.getText().toString();
+            errorText = type + " invalide!";
+        }
     }
 
     // When the EditText changes, check if it's valid. Update the UI accordingly.

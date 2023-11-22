@@ -1,7 +1,6 @@
 package com.example.servicenovigrad.backend.services;
 
 import android.annotation.SuppressLint;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,13 +8,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.servicenovigrad.R;
 import com.example.servicenovigrad.backend.util.Callable;
-import com.example.servicenovigrad.backend.util.validators.NameValidator;
 import com.example.servicenovigrad.ui.admin.EditFormActivity;
 
 import java.util.Arrays;
@@ -72,7 +71,6 @@ public class EditFormElementAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             super(view);
             namePrompt = view.findViewById(R.id.spinnerNamePrompt);
             nameField = view.findViewById(R.id.spinnerNameField);
-            TextView elemsPrompt = view.findViewById(R.id.elemsPrompt);
             elemsField = view.findViewById(R.id.elemsField);
             del = view.findViewById(R.id.deleteButton2);
         }
@@ -216,6 +214,8 @@ public class EditFormElementAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             // notifyItemRangeChanged(position, elements.size());
 
             notifyDataSetChanged();
+
+            // Toast.makeText(context, "Élément supprimé", Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -237,5 +237,7 @@ public class EditFormElementAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     public TreeMap<FormElement, BaseHolder> getHolders() {return holders;}
     // Returns false if the holder for this specific element is currently recycled
-    public boolean isEnabled(int pos) {return holdersEnabled.get(elements.get(pos));}
+    public boolean isEnabled(int pos) {
+        return Boolean.TRUE.equals(holdersEnabled.get(elements.get(pos)));
+    }
 }

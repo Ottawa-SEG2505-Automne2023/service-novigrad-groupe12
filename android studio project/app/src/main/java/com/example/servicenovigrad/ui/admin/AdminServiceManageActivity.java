@@ -11,7 +11,7 @@ import com.example.servicenovigrad.backend.services.AdminServiceAdapter;
 import com.example.servicenovigrad.backend.services.ServiceForm;
 
 public class AdminServiceManageActivity extends AppCompatActivity {
-    ListView serviceList;
+    private ListView serviceList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -17,7 +17,7 @@ import com.example.servicenovigrad.backend.account.Account;
 import com.example.servicenovigrad.backend.util.DataModifiedHook;
 
 public class AdminAccountManageActivity extends AppCompatActivity {
-    ListView usersListView;
+    private ListView usersListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

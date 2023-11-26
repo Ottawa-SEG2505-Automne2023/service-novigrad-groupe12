@@ -27,6 +27,19 @@
     <string name="save">Sauvegarder</string>
     <string name="oui">Oui</string>
     <string name="non">Non</string>
+    <string name="employee_handle_profile">Modifier le profil de la succursale</string>
+    <string name="employee_handle_requests">Gérer les demandes de services</string>
+    <string name="select_days">Jours d\'ouverture</string>
+    <string name="select_hours">Heures d\'ouverture</string>
+    <string name="à">à</string>
+    <string name="select_services">Services offerts</string>
+    <string name="Sunday">Dimanche</string>
+    <string name="Monday">Lundi</string>
+    <string name="Tuesday">Mardi</string>
+    <string name="Wednesday">Mercredi</string>
+    <string name="Thursday">Jeudi</string>
+    <string name="Friday">Vendredi</string>
+    <string name="Saturday">Samedi</string>
     <string-array name="signup_roles">
         <item>Client</item>
         <item>Employé de la succursale</item>
@@ -42,5 +55,16 @@
         <item>Nom</item>
         <item>Nombre</item>
         <item>Date</item>
+    </string-array>
+    <string-array name="times">
+        <item>9:00</item>
+        <item>10:00</item>
+        <item>11:00</item>
+        <item>12:00</item>
+        <item>1:00</item>
+        <item>2:00</item>
+        <item>3:00</item>
+        <item>4:00</item>
+        <item>5:00</item>
     </string-array>
 </resources>

@@ -9,7 +9,7 @@ import com.example.servicenovigrad.backend.services.ElementType;
 import com.example.servicenovigrad.backend.services.ExtraFormData;
 import com.example.servicenovigrad.backend.services.FormElement;
 import com.example.servicenovigrad.backend.services.ServiceForm;
-import com.example.servicenovigrad.backend.util.validators.DateValidator;
+import com.example.servicenovigrad.backend.util.validators.OldDateValidator;
 import com.example.servicenovigrad.backend.util.validators.UserPassValidator;
 
 /**
@@ -71,7 +71,7 @@ public class ExampleUnitTest {
     // But always a good idea to preemptively test it!
     // Should be valid if the entered date (yyyy-mm-dd) is at least 18 years ago
     public void testDateValidator() {
-        DateValidator validator = new DateValidator(null, null, null);
+        OldDateValidator validator = new OldDateValidator(null, null, null);
 
         // Valid date
         assertTrue(validator.validateText("2004-02-19"));

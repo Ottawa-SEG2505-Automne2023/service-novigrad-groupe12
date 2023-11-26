@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import com.example.servicenovigrad.backend.account.Account;
 import com.example.servicenovigrad.backend.services.ServiceForm;
 import com.example.servicenovigrad.backend.util.DataModifiedHook;
+import com.example.servicenovigrad.ui.branch.EmployeeMainActivity;
 import com.example.servicenovigrad.ui.admin.AdminMainActivity;
 import com.example.servicenovigrad.ui.MainActivity;
 import com.google.firebase.database.DataSnapshot;
@@ -68,25 +69,17 @@ public class DatabaseHandler {
                 }
             });
 
-            servicesRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    services.clear();
-                    for (DataSnapshot service : snapshot.getChildren()) {
-                        services.add(service.getValue(ServiceForm.class));
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    Log.d("AccountHandler", "Cannot connect to database: " + error.getMessage());
-                }
-            });
+            runServiceLoader();
 
             // Launch the admin activity
             return AdminMainActivity.class;
         }
-        // Other login
+        // Employee login
+        else if (user.getRole().equals("Employé de la succursale")) {
+            runServiceLoader();
+            return EmployeeMainActivity.class;
+        }
+        // Client login
         return MainActivity.class;
     }
 
@@ -132,4 +125,21 @@ public class DatabaseHandler {
     public static ArrayList<ServiceForm> getServicesList() {return services;}
 
     public static FirebaseDatabase getDatabase() {return database;}
+
+    private static void runServiceLoader() {
+        servicesRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                services.clear();
+                for (DataSnapshot service : snapshot.getChildren()) {
+                    services.add(service.getValue(ServiceForm.class));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("AccountHandler", "Cannot connect to database: " + error.getMessage());
+            }
+        });
+    }
 }

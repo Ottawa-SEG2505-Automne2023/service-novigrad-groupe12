@@ -11,9 +11,9 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-public class DateValidator extends FieldValidator {
+public class OldDateValidator extends FieldValidator {
     // Currently untested, will test when implementing employee and/or client stuff
-    public DateValidator(Updatable origin, TextView fieldLabel, String type) {
+    public OldDateValidator(Updatable origin, TextView fieldLabel, String type) {
         super(origin, fieldLabel, type);
     }
 

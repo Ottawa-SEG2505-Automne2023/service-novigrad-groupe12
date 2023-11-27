@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.example.servicenovigrad.backend.account.Account;
+import com.example.servicenovigrad.backend.account.BranchAccount;
 import com.example.servicenovigrad.backend.services.ServiceForm;
 import com.example.servicenovigrad.backend.util.DataModifiedHook;
 import com.example.servicenovigrad.ui.branch.EmployeeMainActivity;
@@ -17,6 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.PriorityQueue;
 import java.util.TreeMap;
 
@@ -49,7 +51,11 @@ public class DatabaseHandler {
                     for (DataSnapshot user : snapshot.getChildren()) {
                         // Only get accounts that are not the one we just logged into
                         if (!account.getUsername().equals(user.child("username").getValue(String.class))) {
-                            userQueue.add(user.getValue(Account.class));
+                            if (Objects.equals(user.child("role").getValue(String.class), "Employé de la succursale")) {
+                                userQueue.add(user.getValue(BranchAccount.class));
+                            } else {
+                                userQueue.add(user.getValue(Account.class));
+                            }
                         }
                     }
                     // Fill the list

@@ -17,7 +17,6 @@ public class ExtraFormData {
     private int validatorClass;
     private final List<String> elements = new ArrayList<>();
     public ExtraFormData() {}
-    public ExtraFormData(List<String> elements) {setElements(elements);}
     public int getCharLimit() {return charLimit;}
     public int getValidatorClass() {return validatorClass;}
     public List<String> getElements() {return elements;}

@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.example.servicenovigrad.R;
 import com.example.servicenovigrad.backend.DatabaseHandler;
+import com.example.servicenovigrad.backend.account.BranchAccount;
 import com.example.servicenovigrad.backend.util.validators.UserPassValidator;
 import com.example.servicenovigrad.backend.util.Updatable;
 import com.example.servicenovigrad.backend.account.Account;
@@ -76,7 +77,12 @@ public class SignupActivity extends AppCompatActivity implements Updatable {
                     String role = roleSpinner.getSelectedItem().toString();
                     String password = signupPassword.getText().toString();
 
-                    Account acct = new Account(username, nom, prenom, role, password);
+                    Account acct;
+                    if (role.equals("Employé de la succursale")) {
+                        acct = new BranchAccount(username, nom, prenom, role, password);
+                    } else {
+                        acct = new Account(username, nom, prenom, role, password);
+                    }
                     acctRef.setValue(acct);
                     DatabaseHandler.user = acct;
                     startActivity(new Intent(getApplicationContext(), DatabaseHandler.loginAsUser(acct)));

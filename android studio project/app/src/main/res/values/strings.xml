@@ -40,6 +40,9 @@
     <string name="Thursday">Jeudi</string>
     <string name="Friday">Vendredi</string>
     <string name="Saturday">Samedi</string>
+    <string name="offered">Offert</string>
+    <string name="not_offered">Non-offert</string>
+    <string name="address">Adresse</string>
     <string-array name="signup_roles">
         <item>Client</item>
         <item>Employé de la succursale</item>

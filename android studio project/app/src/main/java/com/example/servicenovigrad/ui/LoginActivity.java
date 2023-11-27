@@ -15,6 +15,7 @@ import android.widget.Button;
 import com.example.servicenovigrad.R;
 import com.example.servicenovigrad.backend.account.Account;
 import com.example.servicenovigrad.backend.DatabaseHandler;
+import com.example.servicenovigrad.backend.account.BranchAccount;
 import com.example.servicenovigrad.backend.util.validators.UserPassValidator;
 import com.example.servicenovigrad.backend.util.Updatable;
 
@@ -23,6 +24,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity implements Updatable {
     private EditText userField, passField;
@@ -61,8 +64,15 @@ public class LoginActivity extends AppCompatActivity implements Updatable {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 // If this path exists
                 if (snapshot.exists()) {
-                    Account acct = snapshot.getValue(Account.class);
+                    Account acct;
+
+                    if (Objects.equals(snapshot.child("role").getValue(String.class), "Employé de la succursale")) {
+                        acct = snapshot.getValue(BranchAccount.class);
+                    } else {
+                        acct = snapshot.getValue(Account.class);
+                    }
                     assert acct != null;
+
                     // And the passwords match
                     if (passField.getText().toString().equals(acct.getPassword())) {
                         startActivity(new Intent(getApplicationContext(), DatabaseHandler.loginAsUser(acct)));

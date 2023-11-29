@@ -5,10 +5,12 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import com.example.servicenovigrad.backend.account.Account;
+import com.example.servicenovigrad.backend.account.BranchAccount;
 import com.example.servicenovigrad.backend.services.ElementType;
 import com.example.servicenovigrad.backend.services.ExtraFormData;
 import com.example.servicenovigrad.backend.services.FormElement;
 import com.example.servicenovigrad.backend.services.ServiceForm;
+import com.example.servicenovigrad.backend.util.validators.AddressValidator;
 import com.example.servicenovigrad.backend.util.validators.OldDateValidator;
 import com.example.servicenovigrad.backend.util.validators.UserPassValidator;
 
@@ -71,7 +73,7 @@ public class ExampleUnitTest {
     // But always a good idea to preemptively test it!
     // Should be valid if the entered date (yyyy-mm-dd) is at least 18 years ago
     public void testDateValidator() {
-        OldDateValidator validator = new OldDateValidator(null, null, null);
+        OldDateValidator validator = new OldDateValidator(null, null, null, 18);
 
         // Valid date
         assertTrue(validator.validateText("2004-02-19"));
@@ -132,5 +134,33 @@ public class ExampleUnitTest {
         assertEquals(30, s.getElements().size());
 
         System.out.println("testFillService passed!");
+    }
+
+    @Test
+    public void testAddressValidator() {
+        AddressValidator validator = new AddressValidator(null, null, null);
+        assertTrue(validator.validateText("123 Street, City"));
+        assertFalse(validator.validateText("-103 0000 SNMMSA"));
+        assertFalse(validator.validateText("gary"));
+        assertTrue(validator.validateText("2024 R. Növigràd, Villâge-023 A"));
+        assertFalse(validator.validateText(""));
+
+        System.out.println("testAddressValidator passed!");
+    }
+
+    @Test
+    public void testBranchStuff() {
+        BranchAccount acct = new BranchAccount("", "B", "", "Employé de la succursale", "p");
+        acct.setOpeningHours(0);
+        acct.setClosingHours(8);
+        for (int i = 0; i < 7; i++) {acct.getDaysList().add(false);}
+        acct.getDaysList().set(2, true);
+
+        assertEquals("9:00", acct.storedHoursToRealHours(acct.getOpeningHours()));
+        assertEquals("5:00", acct.storedHoursToRealHours(acct.getClosingHours()));
+        assertTrue(acct.getDaysList().get(2));
+        assertFalse(acct.getDaysList().get(1));
+
+        System.out.println("testBranchStuff passed!");
     }
 }

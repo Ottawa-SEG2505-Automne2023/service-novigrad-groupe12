@@ -132,6 +132,32 @@ public class DatabaseHandler {
 
     public static FirebaseDatabase getDatabase() {return database;}
 
+    // Sends a notification to the given user
+    public static void notify(String username, String message) {
+        DatabaseReference ref = usersRef.child(username).child("notifications");
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                // If the account already has notifications
+                if (snapshot.exists()) {
+                    // Append to the end of the list
+                    long ext = snapshot.getChildrenCount();
+                    ref.child("" + ext).setValue(message);
+                }
+                // Otherwise
+                else {
+                    // Create the first instance in the list
+                    ref.child("0").setValue(message);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("AccountHandler", "Cannot connect to database: " + error.getMessage());
+            }
+        });
+    }
+
     private static void runServiceLoader() {
         servicesRef.addValueEventListener(new ValueEventListener() {
             @Override

@@ -1,5 +1,6 @@
 package com.example.servicenovigrad.backend.services;
 
+import com.example.servicenovigrad.backend.DatabaseHandler;
 import com.example.servicenovigrad.backend.account.Account;
 
 import java.util.ArrayList;
@@ -16,4 +17,10 @@ public class FilledForm {
     public Account getSource() {return source;}
     public String getName() {return name;}
     public List<String> getTextSequence() {return textSequence;}
+    public void respond(boolean approved) {
+        String str = "Votre demande pour le service: \"" + name + "\" a été ";
+        if (approved) {str += "approuvée";}
+        else {str += "refusée";}
+        DatabaseHandler.notify(source.getUsername(), str);
+    }
 }

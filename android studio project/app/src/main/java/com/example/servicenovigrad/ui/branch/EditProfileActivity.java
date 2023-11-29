@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -107,8 +108,25 @@ public class EditProfileActivity extends AppCompatActivity implements Updatable 
         for (int i = 0; i < user.getDaysList().size(); i++) {
             dayBoxes.get(i).setChecked(user.getDaysList().get(i));
         }
+
+        AdapterView.OnItemSelectedListener spinnerListener = new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                update();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                update();
+            }
+        };
+
         openingSpinner.setSelection(user.getOpeningHours());
+        openingSpinner.setOnItemSelectedListener(spinnerListener);
+
         closingSpinner.setSelection(user.getClosingHours());
+        closingSpinner.setOnItemSelectedListener(spinnerListener);
+
         serviceList.setAdapter(new BranchServiceAdapter(this, DatabaseHandler.getServicesList()));
 
         addressField.addTextChangedListener(new AddressValidator(this, addressPrompt, "Adresse"));
@@ -119,7 +137,7 @@ public class EditProfileActivity extends AppCompatActivity implements Updatable 
     }
 
     public void update() {
-        save.setEnabled(addressPrompt.getTextColors().getDefaultColor() != 0xFFFF0000 && addressField.getText().length() > 0);
+        save.setEnabled(addressPrompt.getTextColors().getDefaultColor() != 0xFFFF0000 && addressField.getText().length() > 0 && openingSpinner.getSelectedItemPosition() < closingSpinner.getSelectedItemPosition());
     }
 
     private void saveProfile() {

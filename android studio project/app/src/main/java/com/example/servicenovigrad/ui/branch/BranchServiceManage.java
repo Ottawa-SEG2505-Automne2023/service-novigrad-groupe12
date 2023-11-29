@@ -10,18 +10,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.example.servicenovigrad.R;
 import com.example.servicenovigrad.backend.DatabaseHandler;
 import com.example.servicenovigrad.backend.account.BranchAccount;
 import com.example.servicenovigrad.backend.services.FilledForm;
-import com.example.servicenovigrad.backend.services.ServiceForm;
 
-import java.util.HashMap;
 import java.util.List;
 
 public class BranchServiceManage extends AppCompatActivity {
@@ -57,14 +55,25 @@ public class BranchServiceManage extends AppCompatActivity {
         }
     }
 
+    private BranchAccount user;
+    private BaseAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_branch_service_manage);
 
-        BranchAccount user = (BranchAccount) DatabaseHandler.user;
+        user = (BranchAccount) DatabaseHandler.user;
 
         ListView requestView = findViewById(R.id.usersListView);
-        requestView.setAdapter(new BranchRequestAdapter(this, user.getRequests()));
+        adapter = new BranchRequestAdapter(this, user.getRequests());
+        requestView.setAdapter(adapter);
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        adapter.notifyDataSetChanged();
+        if (user.getRequests().size() == 0) {finish();}
     }
 }

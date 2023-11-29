@@ -7,6 +7,7 @@ class Account {
   -String prenom
   -String role
   -String password
+  -List<String> NOTIFICATIONS
   +Account()
   +Account(String, String, String, String, String)
   +String getUsername()
@@ -14,11 +15,13 @@ class Account {
   +String getPrenom()
   +String getRole()
   +String getPassword()
+  +List<String> getNotifications()
   +void setUsername(String)
   +void setNom(String)
   +void setPrenom(String)
   +void setRole(String)
   +void setPassword(String)
+  +void setNotifications(List<String>)
   +int compareTo(Account)
   -int sign(int)
 }
@@ -34,6 +37,7 @@ class BranchAccount extends Account {
   -int openingHours
   -int closingHours
   -String address
+  -List<FilledForm> REQUESTS
   +BranchAccount()
   +BranchAccount(String, String, String, String, String)
   +HashMap<String, Boolean> getServiceMap()
@@ -41,11 +45,13 @@ class BranchAccount extends Account {
   +int getOpeningHours()
   +int getClosingHours()
   +String getAddress()
+  +List<FilledForm> getRequests()
   +void setServiceMap(HashMap<String, Boolean>)
   +void setDaysList(List<Boolean>)
   +void setOpeningHours(int)
   +void setClosingHours(int)
   +void setAddress(String)
+  +void setRequests(List<FilledForm>)
   +String storedHoursToRealHours(int)
 }
 class AdminServiceAdapter {
@@ -109,8 +115,21 @@ class ExtraFormData {
   +void setValidatorClass(int)
   +void setElements(List<String>)
 }
+class FilledForm {
+  -Account source
+  -String name
+  -List<String> TEXTSEQUENCE
+  +FilledForm()
+  +void setSource(Account)
+  +void setName(String)
+  +void setTextSequence(List<String>)
+  +Account getSource()
+  +String getName()
+  +List<String> getTextSequence()
+  +void respond(boolean)
+}
 class FormElement {
-  -ElementType tyoe
+  -ElementType type
   -String label
   -ExtraFormData extra 
   +FormElement()
@@ -165,7 +184,8 @@ class NumberValidator extends FieldValidator {
   #boolean validateText(CharSequence)
 }
 class OldDateValidator extends FieldValidator {
-  +OldDateValidator(Updatable, TextView, String)
+  -int minAge
+  +OldDateValidator(Updatable, TextView, String, int)
   +boolean validateText(CharSequence)
   -LocalDate getDate(CharSequence)
 }
@@ -205,6 +225,7 @@ class DatabaseHandler {
   +{static}void deleteService(ServiceForm)
   +{static}ArrayList<ServiceForm> getServicesList()
   +{static}FirebaseDatabase getDatabase()
+  +{static}notify(String, String)
   -{static}void runServiceLoader()
 }
 class AdminAccountManageActivity {
@@ -236,6 +257,31 @@ class EditFormActivity implements Updatable {
   +void compileElement(EditFormElementAdapter, BaseHolder, int)
   +void showFormDeletionConfirmation(ServiceForm)
 }
+class BranchApproveRequestActivity {
+  -BranchAccount user
+  -FilledForm req
+  -int reqID
+  #void onCreate(Bundle)
+  -void removeRequest(boolean)
+}
+class FilledRequestAdapter {
+  -AppCompatActivity CONTEXT
+  -List<String> LINES
+  +FilledRequestAdapter(AppCompatActivity, List<String>)
+  +View getView(int, View, ViewGroup)
+}
+class BranchServiceManage {
+  -BranchAccount user
+  -BaseAdapter adapter
+  #void onCreate(Bundle)
+  #void onRestart()
+}
+class BranchRequestAdapter {
+  -AppCompatActivity CONTEXT
+  -List<FilledForm> requests
+  +BranchRequestAdapter(AppCompatActivity, List<FilledForm>)
+  +void getView(int, View, ViewGroup)
+}
 class EditProfileActivity implements Updatable {
   -List<CheckBox> DAYBOXES
   -Spinner openingSpinner
@@ -257,7 +303,11 @@ class BranchServiceAdapter {
   +HashMap<String, Boolean> getServiceToggles()
 }
 class EmployeeMainActivity extends WelcomeActivity {
+  -Button requestsButton
+  -BranchAccount user
+  -String reqButtonText
   #void onCreate(Bundle)
+  #void onStart()
 }
 class FillFormActivity {
   #void onCreate(Bundle)
@@ -313,5 +363,15 @@ DatabaseHandler "1"-down->"*" DataModifiedHook
 AdminAccountManageActivity -> Account
 EditFormActivity "1"->"1" ServiceForm
 ServiceForm "*"<-down-"1" BranchServiceAdapter 
+BranchAccount "1"<-down-"1" BranchApproveRequestActivity
+BranchAccount "1"<-down-"1" BranchServiceManage
+BranchAccount "1"<-down-"1" EmployeeMainActivity
+BranchAccount "1"-right->"*" FilledForm
+FilledForm "1"<-right-"1" BranchApproveRequestActivity
+FilledForm "*"<-right-"1" BranchRequestAdapter
+FilledForm "1"-up->"1" Account
+BranchRequestAdapter "1"-"1" BranchServiceManage
+BranchApproveRequestActivity "1"-"1" FilledRequestAdapter
+EditProfileActivity "1"-"1" BranchServiceAdapter
 
 @enduml

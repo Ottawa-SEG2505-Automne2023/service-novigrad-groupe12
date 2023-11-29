@@ -12,14 +12,16 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class OldDateValidator extends FieldValidator {
+    private int minAge;
     // Currently untested, will test when implementing employee and/or client stuff
-    public OldDateValidator(Updatable origin, TextView fieldLabel, String type) {
+    public OldDateValidator(Updatable origin, TextView fieldLabel, String type, int minAge) {
         super(origin, fieldLabel, type);
+        this.minAge = minAge;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public boolean validateText(CharSequence s) {
-        LocalDate lim = LocalDate.now().minusYears(18);
+        LocalDate lim = LocalDate.now().minusYears(minAge);
         LocalDate inDate = getDate(s);
         if (inDate == null) {return false;}
 

@@ -20,5 +20,8 @@ public class EmployeeMainActivity extends WelcomeActivity {
 
         Button profileButton = findViewById(R.id.branchProfileButton);
         profileButton.setOnClickListener(v -> startActivity(new Intent(this, EditProfileActivity.class)));
+
+        Button requestsButton = findViewById(R.id.branchServiceButton);
+        requestsButton.setOnClickListener(v -> startActivity(new Intent(this, BranchServiceManage.class)));
     }
 }

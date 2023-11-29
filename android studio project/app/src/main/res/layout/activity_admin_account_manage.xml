@@ -7,7 +7,7 @@
     tools:context=".ui.admin.AdminAccountManageActivity">
 
     <ListView
-        android:id="@+id/servicesListView"
+        android:id="@+id/usersListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginStart="10dp"

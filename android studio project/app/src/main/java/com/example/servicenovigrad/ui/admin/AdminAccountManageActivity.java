@@ -25,7 +25,7 @@ public class AdminAccountManageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_admin_account_manage);
 
         // Get the ListView
-        usersListView = findViewById(R.id.servicesListView);
+        usersListView = findViewById(R.id.usersListView);
     }
 
     @Override

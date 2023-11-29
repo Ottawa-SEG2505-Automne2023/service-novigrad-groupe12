@@ -294,23 +294,24 @@ class WelcomeActivity {
   #void onStart()
 }
 
-AdminUserAdapter "1"-"1" AdminAccountManageActivity
-AdminUserAdapter "1"->"*" Account
-AdminServiceAdapter "1"-"1" AdminServiceManageActivity
-AdminServiceAdapter "1"->"*" ServiceForm
-EditFormElementAdapter "1"-"1" EditFormActivity
-EditFormElementAdapter "1"->"*" FormElement
-BaseHolder -> Callable
+AdminUserAdapter "1"-left-"1" AdminAccountManageActivity
+AdminUserAdapter "1"-down->"*" Account
+AdminServiceAdapter "1"-down-"1" AdminServiceManageActivity
+AdminServiceAdapter "1"-left->"*" ServiceForm
+EditFormElementAdapter "1"-up-"1" EditFormActivity
+EditFormElementAdapter "1"-right->"*" FormElement
+BaseHolder -left-> Callable
+BaseHolder "*"-up-*"1" EditFormElementAdapter
 FormElement "1"-down->"1" ElementType
-FormElement "1"-down->"1" ExtraFormElement
+FormElement "1"-down->"1" ExtraFormData
 ServiceForm "1"*-"*" FormElement
 FieldValidator "*"-"1" Updatable
-DataModifiedHook "1"->"1" Callable
+DataModifiedHook "1"-down->"1" Callable
 DatabaseHandler "1"-right->"*" Account
 DatabaseHandler "1"->"*" ServiceForm
-DatabaseHandler "1"->"*" DataModifiedHook
+DatabaseHandler "1"-down->"*" DataModifiedHook
 AdminAccountManageActivity -> Account
 EditFormActivity "1"->"1" ServiceForm
-BranchServiceAdapter "1"->"*" ServiceForm
+ServiceForm "*"<-down-"1" BranchServiceAdapter 
 
 @enduml

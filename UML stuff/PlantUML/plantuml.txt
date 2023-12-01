@@ -242,6 +242,7 @@ class DatabaseHandler {
   -{static}TreeMap<String, DataModifiedHook> ONUSERSMODIFIEDEVENTS
   -{static}DatabaseReference SERVICESREF
   -{static}ArrayList<ServiceForm> SERVICES
+  -{static}ArrayList<CompleteBranch> BRANCHES
   +{static}Class<?> loginAsUser(Account)
   +{static}void addOnModifiedEvent(String, DataModifiedHook)
   +{static}void removeOnModifiedEvent(String, String)
@@ -386,6 +387,7 @@ DataModifiedHook "1"-down->"1" Callable
 DatabaseHandler "1"-right->"*" Account
 DatabaseHandler "1"->"*" ServiceForm
 DatabaseHandler "1"-down->"*" DataModifiedHook
+DatabaseHandler "1"-right->"*" CompleteBranch
 AdminAccountManageActivity -> Account
 EditFormActivity "1"->"1" ServiceForm
 ServiceForm "*"<-down-"1" BranchServiceAdapter 
@@ -399,6 +401,6 @@ FilledForm "1"-up->"1" Account
 BranchRequestAdapter "1"-"1" BranchServiceManage
 BranchApproveRequestActivity "1"-"1" FilledRequestAdapter
 EditProfileActivity "1"-"1" BranchServiceAdapter
-CompleteBranch "1"->"represents 1" BranchAccount
+CompleteBranch "1"->"1" BranchAccount
 
 @enduml

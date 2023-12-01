@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 
 import com.example.servicenovigrad.backend.account.Account;
 import com.example.servicenovigrad.backend.account.BranchAccount;
+import com.example.servicenovigrad.backend.account.CompleteBranch;
 import com.example.servicenovigrad.backend.services.ServiceForm;
 import com.example.servicenovigrad.backend.util.DataModifiedHook;
 import com.example.servicenovigrad.ui.branch.EmployeeMainActivity;
@@ -32,6 +33,7 @@ public class DatabaseHandler {
     // SERVICES STUFF
     private static final DatabaseReference servicesRef = database.getReference("globalServices");
     private static final ArrayList<ServiceForm> services = new ArrayList<>();
+    private static final ArrayList<CompleteBranch> branches = new ArrayList<>();
 
     // Logs in as a user (returns which activity to launch)
     public static Class<?> loginAsUser(Account account) {
@@ -85,7 +87,25 @@ public class DatabaseHandler {
             runServiceLoader();
             return EmployeeMainActivity.class;
         }
+
         // Client login
+
+        database.getReference("completeBranches").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for (DataSnapshot child : snapshot.getChildren()) {
+                        branches.add(child.getValue(CompleteBranch.class));
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("DatabaseHandler", "Couldn't access database: " + error.getMessage());
+            }
+        });
+
         return MainActivity.class;
     }
 

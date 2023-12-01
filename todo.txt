@@ -1,1 +1,8 @@
-Validate name fields in SignupActivity (will be done in another deliverable)
+(low priority) Validate name fields in SignupActivity
+
+Client search algorithm for completeBranches in MainActivity (use CompleteBranch.rating() to get the rating. This returns -1 if there are currently no ratings, so handle that as a special case!)
+
+Client fill form activity (needs a RecyclerView with a new adapter for building TextViews and EditTexts from ServiceForm.getElements())
+	Documents can't be implemented without some sort of cloud file storage API! For now, just have them display a placeholder text explaining that this is where we would hook it up to our client's cloud storage system
+
+Once client fills a form, have a popup appear in MainActivity that asks them to rate their experience.

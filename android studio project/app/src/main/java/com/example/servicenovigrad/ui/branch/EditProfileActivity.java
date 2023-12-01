@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.example.servicenovigrad.R;
 import com.example.servicenovigrad.backend.DatabaseHandler;
 import com.example.servicenovigrad.backend.account.BranchAccount;
+import com.example.servicenovigrad.backend.account.CompleteBranch;
 import com.example.servicenovigrad.backend.services.ServiceForm;
 import com.example.servicenovigrad.backend.util.Updatable;
 import com.example.servicenovigrad.backend.util.validators.AddressValidator;
@@ -160,6 +161,10 @@ public class EditProfileActivity extends AppCompatActivity implements Updatable 
 
         // Upload to database & close this activity
         DatabaseHandler.getDatabase().getReference("users/" + user.getUsername()).setValue(user);
+
+        // Upload to a new directory of the database, for users to be able to search from
+        DatabaseHandler.getDatabase().getReference("completeBranches/" + user.getUsername()).setValue(new CompleteBranch(user));
+
         finish();
     }
 }

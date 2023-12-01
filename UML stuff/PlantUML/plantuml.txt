@@ -54,6 +54,32 @@ class BranchAccount extends Account {
   +void setRequests(List<FilledForm>)
   +String storedHoursToRealHours(int)
 }
+class CompleteBranch {
+ -HashMap<String, Boolean> serviceMap
+ -List<Boolean> daysList
+ -int openingHours
+ -int closingAddress
+ -String address
+ -String username
+ -HashMap<Integer, Integer> ratingSpread
+ +CompleteBranch()
+ +CompleteBranch(BranchAccount)
+ +HashMap<String, Boolean> getServiceMap()
+ +List<Boolean> getDaysList()
+ +int getOpeningHours()
+ +int getClosingHours()
+ +String getAddress()
+ +String getUsername()
+ +HashMap<Integer, Integer> getRatingSpread()
+ +void setServiceMap(HashMap<String, Boolean>)
+ +void setDaysList(List<Boolean>)
+ +void setOpeningHours(int)
+ +void setClosingHours(int)
+ +void setAddress(String)
+ +void setUsername(String)
+ +void setRatingSpread(HashMap<Integer, Integer>)
+ +double rating()
+}
 class AdminServiceAdapter {
   -AdminServiceManageActivity CONTEXT
   -List<ServiceForm> SERVICES
@@ -373,5 +399,6 @@ FilledForm "1"-up->"1" Account
 BranchRequestAdapter "1"-"1" BranchServiceManage
 BranchApproveRequestActivity "1"-"1" FilledRequestAdapter
 EditProfileActivity "1"-"1" BranchServiceAdapter
+CompleteBranch "1"->"represents 1" BranchAccount
 
 @enduml

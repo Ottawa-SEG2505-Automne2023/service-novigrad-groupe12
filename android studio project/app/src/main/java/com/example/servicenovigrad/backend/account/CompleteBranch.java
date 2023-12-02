@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class CompleteBranch {
-    private HashMap<String, Boolean> serviceMap;
+    private final HashMap<String, Boolean> serviceMap = new HashMap<>();
     private List<Boolean> daysList;
     private int openingHours;
     private int closingHours;
@@ -14,7 +14,8 @@ public class CompleteBranch {
     private final HashMap<Integer, Integer> ratingSpread = new HashMap<>();
     public CompleteBranch() {}
     public CompleteBranch(BranchAccount base) {
-        serviceMap = base.getServiceMap();
+        serviceMap.clear();
+        serviceMap.putAll(base.getServiceMap());
         daysList = base.getDaysList();
         openingHours = base.getOpeningHours();
         closingHours = base.getClosingHours();
@@ -29,7 +30,12 @@ public class CompleteBranch {
     public String getAddress() {return address;}
     public String getUsername() {return username;}
     public HashMap<Integer, Integer> getRatingSpread() {return ratingSpread;}
-    public void setServiceMap(HashMap<String,Boolean> serviceMap) {this.serviceMap = serviceMap;}
+    public void setServiceMap(HashMap<String,Boolean> serviceMap) {
+        this.serviceMap.clear();
+        if (serviceMap != null) {
+            this.serviceMap.putAll(serviceMap);
+        }
+    }
     public void setDaysList(List<Boolean> daysList) {this.daysList = daysList;}
     public void setOpeningHours(int openingHours) {this.openingHours = openingHours;}
     public void setClosingHours(int closingHours) {this.closingHours = closingHours;}

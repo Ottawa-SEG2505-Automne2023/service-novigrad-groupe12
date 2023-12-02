@@ -19,6 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 import java.util.PriorityQueue;
 import java.util.TreeMap;
@@ -76,7 +77,6 @@ public class DatabaseHandler {
                     Log.d("AccountHandler", "Cannot connect to database: " + error.getMessage());
                 }
             });
-
             runServiceLoader();
 
             // Launch the admin activity
@@ -89,7 +89,6 @@ public class DatabaseHandler {
         }
 
         // Client login
-
         database.getReference("completeBranches").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

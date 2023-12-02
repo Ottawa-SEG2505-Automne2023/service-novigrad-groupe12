@@ -163,7 +163,22 @@ public class EditProfileActivity extends AppCompatActivity implements Updatable 
         DatabaseHandler.getDatabase().getReference("users/" + user.getUsername()).setValue(user);
 
         // Upload to a new directory of the database, for users to be able to search from
-        DatabaseHandler.getDatabase().getReference("completeBranches/" + user.getUsername()).setValue(new CompleteBranch(user));
+
+        CompleteBranch branch = new CompleteBranch(user);
+        // Reformat the HashMap to use the name of the service instead of the unique ID
+        // (Helps clients search for services)
+        HashMap<String, Boolean> newHashMap = new HashMap<>();
+        for (String key : branch.getServiceMap().keySet()) {
+            for (ServiceForm service : DatabaseHandler.getServicesList()) {
+                if (service.getId().equals(key)) {
+                    newHashMap.put(service.getName(), branch.getServiceMap().get(key));
+                    break;
+                }
+            }
+        }
+        branch.setServiceMap(newHashMap);
+
+        DatabaseHandler.getDatabase().getReference("completeBranches/" + user.getUsername()).setValue(branch);
 
         finish();
     }

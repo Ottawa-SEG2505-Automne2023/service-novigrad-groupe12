@@ -55,7 +55,7 @@ class BranchAccount extends Account {
   +String storedHoursToRealHours(int)
 }
 class CompleteBranch {
- -HashMap<String, Boolean> serviceMap
+ -HashMap<String, Boolean> SERVICEMAP
  -List<Boolean> daysList
  -int openingHours
  -int closingAddress

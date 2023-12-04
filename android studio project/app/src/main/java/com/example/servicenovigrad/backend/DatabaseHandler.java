@@ -20,6 +20,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 import java.util.PriorityQueue;
 import java.util.TreeMap;
@@ -89,6 +90,7 @@ public class DatabaseHandler {
         }
 
         // Client login
+        runServiceLoader();
         database.getReference("completeBranches").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -131,6 +133,10 @@ public class DatabaseHandler {
     // Deletes a specific user from the database
     public static void deleteUser(Account account) {
         usersRef.child(account.getUsername()).removeValue();
+    }
+
+    public static List<CompleteBranch> getBranches() {
+        return branches;
     }
 
     // SERVICES METHODS

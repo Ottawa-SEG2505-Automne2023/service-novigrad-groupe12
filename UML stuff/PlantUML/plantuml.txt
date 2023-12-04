@@ -248,6 +248,7 @@ class DatabaseHandler {
   +{static}void removeOnModifiedEvent(String, String)
   +{static}ArrayList<Account> getUserList()
   +{static}void deleteUser(Account)
+  +{static}List<CompleteBranch> getBranches()
   +{static}void addService(ServiceForm)
   +{static}void deleteService(ServiceForm)
   +{static}ArrayList<ServiceForm> getServicesList()
@@ -337,7 +338,45 @@ class EmployeeMainActivity extends WelcomeActivity {
   #void onStart()
 }
 class FillFormActivity {
+  -ServiceForm service
+  -RecyclerView elementList
+  -Button submitBtn
+  -Button cancelBtn
   #void onCreate(Bundle)
+}
+class FillFormElementAdapter {
+  -FillFormActivity CONTEXT
+  -List<FormElement> ELEMENTS
+  +FillFormElementAdapter(FillFormActivity, List<FormElement>)
+  +int getItemViewType(int)
+  +ViewHolder onCreateViewHolder(ViewGroup, int)
+  +void onBindViewHolder(ViewHolder, int)
+  +int getItemCount()
+}
+abstract class FilledBaseHolder {
+  #View context
+  #TextView name
+  +FilledBaseHolder(View)
+  +void setName(String)
+  +String getName()
+  +{abstract}String getText()
+}
+class FieldHolder extends FilledBaseHolder {
+  -EditText FIELD
+  +FieldHolder(View)
+  +void setCharLimit(int)
+  +void setValidator(FieldValidator)
+  +String getText()
+}
+class SpinnerHolder extends FilledBaseHolder {
+  -Spinner SPINNER
+  +SpinnerHolder(View)
+  +void setElements(List<String>)
+  +String getText()
+}
+class DocumentHolder extends FilledBaseHolder {
+  +DocumentHolder(View)
+  +String getText()
 }
 class LoginActivity implements Updatable {
   -EditText userField

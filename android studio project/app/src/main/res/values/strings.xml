@@ -46,6 +46,9 @@
     <string name="view_request">Voir la demande</string>
     <string name="approve">Approuver</string>
     <string name="deny">Refuser</string>
+    <string name="submit">Soumettre la demande</string>
+    <string name="cancel">Annuler la demande</string>
+    <string name="document_disclaimer">C\'est ici que l\'utilisateur téléchargerait une image du document demandé, qui serait ensuite téléchargée sur le stockage cloud de Service Novigrad. Puisque cela nécessiterait de payer pour le stockage de fichiers en ligne, ce texte est ici à sa place.</string>
     <string-array name="signup_roles">
         <item>Client</item>
         <item>Employé de la succursale</item>

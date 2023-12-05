@@ -58,4 +58,15 @@ public class CompleteBranch {
         }
         return sum / totalRatings;
     }
+    public boolean hasService(String serviceName) {
+        return serviceMap.containsKey(serviceName) && serviceMap.get(serviceName);
+    }
+
+    public boolean isOpenAt(int hour) {
+        return hour >= openingHours && hour <= closingHours;
+    }
+
+    public boolean hasAddress(String searchTerm) {
+        return address.toLowerCase().contains(searchTerm.toLowerCase());
+    }
 }

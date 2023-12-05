@@ -16,18 +16,27 @@ public class MainActivity extends WelcomeActivity {
         setContentView(R.layout.activity_main);
 
         welcomeText = findViewById(R.id.mainWelcomeText);
-        List<CompleteBranch> filteredBranches = searchBranchByRating(3.5); // Replace 3.5 with your desired minimum rating
+        List<CompleteBranch> filteredBranches = searchBranch(3.5, "123 Main St", 14, "Document Processing");
     }
 
-    private List<CompleteBranch> searchBranchByRating(double minRating) {
+    private List<CompleteBranch> searchBranch(double minRating, String addressSearchTerm, int workHours, String serviceType) {
         List<CompleteBranch> filteredBranches = new ArrayList<>();
 
         for (CompleteBranch branch : DatabaseHandler.getBranches()) {
             double rating = branch.rating();
 
-            // Handle the special case when there are currently no ratings (-1)
+            // Check if the branch meets the rating criteria
             if (rating != -1 && rating >= minRating) {
-                filteredBranches.add(branch);
+                // Check if the branch has the desired service type
+                if (serviceType == null || branch.hasService(serviceType)) {
+                    // Check if the branch is open at the specified work hours
+                    if (workHours == -1 || branch.isOpenAt(workHours)) {
+                        // Check if the branch has the specified address
+                        if (addressSearchTerm == null || branch.hasAddress(addressSearchTerm)) {
+                            filteredBranches.add(branch);
+                        }
+                    }
+                }
             }
         }
 

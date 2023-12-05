@@ -21,7 +21,7 @@ public class AdminServiceManageActivity extends AppCompatActivity {
         serviceList = findViewById(R.id.usersListView);
         findViewById(R.id.adminAddServiceButton).setOnClickListener(v -> {
             // Create a new form and begin editing it.
-            new ServiceForm().open(this, "edit");
+            new ServiceForm().open(this, "edit", null);
         });
     }
 

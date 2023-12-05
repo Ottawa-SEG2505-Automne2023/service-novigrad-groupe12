@@ -36,6 +36,7 @@ public class EmployeeMainActivity extends WelcomeActivity {
 
         user = (BranchAccount) DatabaseHandler.user;
 
+        /*
         // TO DELETE ONCE DELIVERABLE 4 IS UNDER WAY
         if (user.getRequests() != null) {
             if (user.getRequests().size() == 0) {
@@ -52,6 +53,7 @@ public class EmployeeMainActivity extends WelcomeActivity {
                 user.setRequests(arr2);
             }
         }
+        */
     }
 
     @Override

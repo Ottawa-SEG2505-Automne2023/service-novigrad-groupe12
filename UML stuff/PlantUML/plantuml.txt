@@ -179,7 +179,7 @@ class ServiceForm {
   +List<FormElement> getElements()
   +String getName()
   +String getId()
-  +void open(Activity, String)
+  +void open(Activity, String, String)
   +boolean equals(ServiceForm)
 }
 class AddressValidator extends FieldValidator {
@@ -337,21 +337,29 @@ class EmployeeMainActivity extends WelcomeActivity {
   #void onCreate(Bundle)
   #void onStart()
 }
-class FillFormActivity {
+class FillFormActivity implements Updatable {
   -ServiceForm service
+  -HashMap<Integer, String[]> compiledElems
   -RecyclerView elementList
-  -Button submitBtn
-  -Button cancelBtn
   #void onCreate(Bundle)
+  +void update()
+  +void compileElement(FilledBaseHolder)
+  +void submitForm()
 }
 class FillFormElementAdapter {
   -FillFormActivity CONTEXT
   -List<FormElement> ELEMENTS
+  -HashMap<FormElement, FilledBaseHolder> HOLDERS
+  -HashMap<FormElement, Boolean> HOLDERSENABLED
   +FillFormElementAdapter(FillFormActivity, List<FormElement>)
   +int getItemViewType(int)
   +ViewHolder onCreateViewHolder(ViewGroup, int)
   +void onBindViewHolder(ViewHolder, int)
   +int getItemCount()
+  +void onViewRecycled(ViewHolder)
+  +boolean isEnabled(int)
+  +HashMap<FormElement, FilledBaseHolder> getHolders()
+  -FieldValidator getValidator(int, TextView, String)
 }
 abstract class FilledBaseHolder {
   #View context

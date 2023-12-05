@@ -67,6 +67,7 @@ public class BranchApproveRequestActivity extends AppCompatActivity {
 
     private void removeRequest(boolean approved) {
         user.getRequests().remove(reqID);
+        DatabaseHandler.getDatabase().getReference("users/" + user.getUsername() + "/requests/" + reqID).removeValue();
         req.respond(approved);
         finish();
     }

@@ -38,7 +38,7 @@ public class AdminServiceAdapter extends ArrayAdapter<ServiceForm> {
 
         // Set its name and allow you to edit it
         nameText.setText(service.getName());
-        editButton.setOnClickListener(v -> service.open(context, "edit"));
+        editButton.setOnClickListener(v -> service.open(context, "edit", null));
 
         return listViewItem;
     }

@@ -26,6 +26,7 @@ import com.example.servicenovigrad.backend.util.validators.NameValidator;
 import com.example.servicenovigrad.backend.util.Updatable;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.TreeMap;
 
 public class EditFormActivity extends AppCompatActivity implements Updatable {
@@ -87,7 +88,7 @@ public class EditFormActivity extends AppCompatActivity implements Updatable {
 
             // Refresh the display (scroll to bottom to ensure holder is properly binded and added to TreeMap)
             list.smoothScrollToPosition(service.getElements().size());
-            list.getAdapter().notifyItemInserted(service.getElements().size());
+            Objects.requireNonNull(list.getAdapter()).notifyItemInserted(service.getElements().size());
         });
 
         // Saving the form to the database
@@ -99,7 +100,7 @@ public class EditFormActivity extends AppCompatActivity implements Updatable {
         // Visual stuff for the RecyclerView
         list.setLayoutManager(new LinearLayoutManager(this));
         DividerItemDecoration spacer = new DividerItemDecoration(list.getContext(), DividerItemDecoration.VERTICAL);
-        spacer.getDrawable().setColorFilter(0xFF000000, PorterDuff.Mode.SRC_OVER);
+        Objects.requireNonNull(spacer.getDrawable()).setColorFilter(0xFF000000, PorterDuff.Mode.SRC_OVER);
         list.addItemDecoration(spacer);
     }
 
@@ -119,6 +120,7 @@ public class EditFormActivity extends AppCompatActivity implements Updatable {
     public void compileForm() {
         EditFormElementAdapter adapter = (EditFormElementAdapter) list.getAdapter();
         List<FormElement> elements = service.getElements();
+        assert adapter != null;
         TreeMap<FormElement, EditFormElementAdapter.BaseHolder> holders = adapter.getHolders();
 
         // Save each element

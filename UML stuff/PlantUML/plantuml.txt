@@ -52,7 +52,6 @@ class BranchAccount extends Account {
   +void setClosingHours(int)
   +void setAddress(String)
   +void setRequests(List<FilledForm>)
-  +String storedHoursToRealHours(int)
 }
 class CompleteBranch {
  -HashMap<String, Boolean> SERVICEMAP
@@ -61,7 +60,7 @@ class CompleteBranch {
  -int closingAddress
  -String address
  -String username
- -HashMap<Integer, Integer> ratingSpread
+ -HashMap<String, Integer> ratingSpread
  +CompleteBranch()
  +CompleteBranch(BranchAccount)
  +HashMap<String, Boolean> getServiceMap()
@@ -70,15 +69,17 @@ class CompleteBranch {
  +int getClosingHours()
  +String getAddress()
  +String getUsername()
- +HashMap<Integer, Integer> getRatingSpread()
+ +HashMap<String, Integer> getRatingSpread()
  +void setServiceMap(HashMap<String, Boolean>)
  +void setDaysList(List<Boolean>)
  +void setOpeningHours(int)
  +void setClosingHours(int)
  +void setAddress(String)
  +void setUsername(String)
- +void setRatingSpread(HashMap<Integer, Integer>)
+ +void setRatingSpread(HashMap<String, Integer>)
  +double rating()
+ +boolean isOpenAt(int)
+ +{static}int realHoursToStoredHours(String)
 }
 class AdminServiceAdapter {
   -AdminServiceManageActivity CONTEXT
@@ -210,7 +211,7 @@ class NumberValidator extends FieldValidator {
   #boolean validateText(CharSequence)
 }
 class OldDateValidator extends FieldValidator {
-  -int minAge
+  -int MINAGE
   +OldDateValidator(Updatable, TextView, String, int)
   +boolean validateText(CharSequence)
   -LocalDate getDate(CharSequence)
@@ -254,7 +255,7 @@ class DatabaseHandler {
   +{static}ArrayList<ServiceForm> getServicesList()
   +{static}FirebaseDatabase getDatabase()
   +{static}notify(String, String)
-  -{static}void runServiceLoader()
+  +{static}void runServiceLoader()
 }
 class AdminAccountManageActivity {
   -ListView usersListView
@@ -337,28 +338,38 @@ class EmployeeMainActivity extends WelcomeActivity {
   #void onCreate(Bundle)
   #void onStart()
 }
+class BrowseServiceActivity {
+  -CompleteBranch targetBranch
+  #void onCreate(Bundle)
+  +void onRestart()
+  -void rateBranch()
+}
+class ServiceAdapter {
+  -AppCompatActivity CONTEXT
+  -List<ServiceForm> SERVICES
+  -String TARGET
+  +ServiceAdapter(AppCompatActivity, List<ServiceForm>, String)
+  +View getView(int, View, ViewGroup)
+}
 class FillFormActivity implements Updatable {
   -ServiceForm service
-  -HashMap<Integer, String[]> compiledElems
-  -RecyclerView elementList
+  -String target
+  -FillFormElementAdapter adapter
+  -Button submitBtn
   #void onCreate(Bundle)
   +void update()
-  +void compileElement(FilledBaseHolder)
   +void submitForm()
 }
 class FillFormElementAdapter {
   -FillFormActivity CONTEXT
   -List<FormElement> ELEMENTS
-  -HashMap<FormElement, FilledBaseHolder> HOLDERS
-  -HashMap<FormElement, Boolean> HOLDERSENABLED
+  -List<FilledBaseHolder> HOLDERS
   +FillFormElementAdapter(FillFormActivity, List<FormElement>)
   +int getItemViewType(int)
   +ViewHolder onCreateViewHolder(ViewGroup, int)
   +void onBindViewHolder(ViewHolder, int)
   +int getItemCount()
-  +void onViewRecycled(ViewHolder)
-  +boolean isEnabled(int)
-  +HashMap<FormElement, FilledBaseHolder> getHolders()
+  +List<FilledBaseHolder> getHolders()
   -FieldValidator getValidator(int, TextView, String)
 }
 abstract class FilledBaseHolder {
@@ -367,6 +378,7 @@ abstract class FilledBaseHolder {
   +FilledBaseHolder(View)
   +void setName(String)
   +String getName()
+  +boolean isValid()
   +{abstract}String getText()
 }
 class FieldHolder extends FilledBaseHolder {
@@ -398,7 +410,20 @@ class LoginActivity implements Updatable {
   +void signupMenu(View)
 }
 class MainActivity extends WelcomeActivity {
+  -EditText searchBox
+  -BranchAdapter adapter
+  -String searchMode
   #void onCreate(Bundle)
+  +void onStart()
+  -void searchBranch()
+  -void showNotification()
+}
+class BranchAdapter {
+  -AppCompatActivity CONTEXT
+  -List<CompleteBranch> BRANCHES
+  +BranchAdapter(AppCompatActivity, List<CompleteBranch>)
+  +View getView(int, View, ViewGroup)
+  +void changeData(List<CompleteBranch>)
 }
 class SignupActivity implements Updatable {
   -Spinner roleSpinner
@@ -434,9 +459,9 @@ DataModifiedHook "1"-down->"1" Callable
 DatabaseHandler "1"-right->"*" Account
 DatabaseHandler "1"->"*" ServiceForm
 DatabaseHandler "1"-down->"*" DataModifiedHook
-DatabaseHandler "1"-right->"*" CompleteBranch
+DatabaseHandler "1"-left>"*" CompleteBranch
 AdminAccountManageActivity -> Account
-EditFormActivity "1"->"1" ServiceForm
+ServiceForm "1"<-down-"1" EditFormActivity
 ServiceForm "*"<-down-"1" BranchServiceAdapter 
 BranchAccount "1"<-down-"1" BranchApproveRequestActivity
 BranchAccount "1"<-down-"1" BranchServiceManage
@@ -449,5 +474,13 @@ BranchRequestAdapter "1"-"1" BranchServiceManage
 BranchApproveRequestActivity "1"-"1" FilledRequestAdapter
 EditProfileActivity "1"-"1" BranchServiceAdapter
 CompleteBranch "1"->"1" BranchAccount
+ServiceAdapter "1"->"*" ServiceForm
+BrowseServiceActivity "1"-down->"1" CompleteBranch
+FillFormElementAdapter "1"*-"*" FilledBaseHolder
+FillFormActivity "1"-down-"1" FillFormElementAdapter
+FillFormElementAdapter "1"-right->"*" FormElement
+FillFormActivity "1"->"1" ServiceForm
+BranchAdapter "1"-down->"*" CompleteBranch
+MainActivity "1"-"1" BranchAdapter
 
 @enduml

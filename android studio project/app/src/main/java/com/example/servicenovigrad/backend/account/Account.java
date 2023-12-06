@@ -40,6 +40,7 @@ public class Account implements Comparable<Account> {
     // Comparison method for ordering in a PriorityQueue (In non-matching non-admin cases, uses String.compareTo on the roles)
     // admin > employee > client
     public int compareTo(Account b) {
+        if (role == null || nom == null || b.role == null || b.nom == null) {return 1;}
         if (role.equals(b.role)) {return sign(nom.compareTo(b.nom));}
 
         if (role.toLowerCase().charAt(0) == 'a') {return -1;}

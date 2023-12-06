@@ -16,6 +16,7 @@ import com.example.servicenovigrad.R;
 import com.example.servicenovigrad.backend.account.Account;
 import com.example.servicenovigrad.backend.DatabaseHandler;
 import com.example.servicenovigrad.backend.account.BranchAccount;
+import com.example.servicenovigrad.backend.account.CompleteBranch;
 import com.example.servicenovigrad.backend.util.validators.UserPassValidator;
 import com.example.servicenovigrad.backend.util.Updatable;
 
@@ -47,6 +48,25 @@ public class LoginActivity extends AppCompatActivity implements Updatable {
         passField.addTextChangedListener(new UserPassValidator(this, passLabel, "Mot de passe"));
 
         btnLogin = findViewById(R.id.loginButton);
+
+        DatabaseHandler.runServiceLoader();
+        DatabaseHandler.getDatabase().getReference("completeBranches").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                DatabaseHandler.getBranches().clear();
+                if (snapshot.exists()) {
+                    for (DataSnapshot child : snapshot.getChildren()) {
+                        CompleteBranch branch = child.getValue(CompleteBranch.class);
+                        DatabaseHandler.getBranches().add(branch);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("DatabaseHandler", "Couldn't access database: " + error.getMessage());
+            }
+        });
     }
 
     // Enables/disables the login button depending on the states of the input fields

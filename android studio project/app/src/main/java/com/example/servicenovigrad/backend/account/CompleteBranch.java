@@ -1,6 +1,5 @@
 package com.example.servicenovigrad.backend.account;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -11,7 +10,7 @@ public class CompleteBranch {
     private int closingHours;
     private String address;
     private String username;
-    private final HashMap<Integer, Integer> ratingSpread = new HashMap<>();
+    private final HashMap<String, Integer> ratingSpread = new HashMap<>();
     public CompleteBranch() {}
     public CompleteBranch(BranchAccount base) {
         serviceMap.clear();
@@ -29,7 +28,7 @@ public class CompleteBranch {
     public int getClosingHours() {return closingHours;}
     public String getAddress() {return address;}
     public String getUsername() {return username;}
-    public HashMap<Integer, Integer> getRatingSpread() {return ratingSpread;}
+    public HashMap<String, Integer> getRatingSpread() {return ratingSpread;}
     public void setServiceMap(HashMap<String,Boolean> serviceMap) {
         this.serviceMap.clear();
         if (serviceMap != null) {
@@ -41,7 +40,7 @@ public class CompleteBranch {
     public void setClosingHours(int closingHours) {this.closingHours = closingHours;}
     public void setAddress(String address) {this.address = address;}
     public void setUsername(String username) {this.username = username;}
-    public void setRatingSpread(HashMap<Integer, Integer> ratingSpread) {
+    public void setRatingSpread(HashMap<String, Integer> ratingSpread) {
         this.ratingSpread.clear();
         if (ratingSpread != null) {
             this.ratingSpread.putAll(ratingSpread);
@@ -51,22 +50,40 @@ public class CompleteBranch {
         if (ratingSpread.keySet().size() == 0) {return -1;}
         double sum = 0f;
         int totalRatings = 0;
-        for (int key : ratingSpread.keySet()) {
+        for (String key : ratingSpread.keySet()) {
             int numRatings = ratingSpread.get(key);
-            sum += key * numRatings;
+            sum += Integer.parseInt(""+key.charAt(1)) * numRatings;
             totalRatings += numRatings;
         }
         return sum / totalRatings;
     }
-    public boolean hasService(String serviceName) {
-        return serviceMap.containsKey(serviceName) && serviceMap.get(serviceName);
-    }
 
     public boolean isOpenAt(int hour) {
-        return hour >= openingHours && hour <= closingHours;
+        return hour >= openingHours && hour < closingHours;
     }
 
-    public boolean hasAddress(String searchTerm) {
-        return address.toLowerCase().contains(searchTerm.toLowerCase());
+    public static int realHoursToStoredHours(String real) {
+        switch (real) {
+            case "9:00":
+                return 0;
+            case "10:00":
+                return 1;
+            case "11:00":
+                return 2;
+            case "12:00":
+                return 3;
+            case "1:00":
+                return 4;
+            case "2:00":
+                return 5;
+            case "3:00":
+                return 6;
+            case "4:00":
+                return 7;
+            case "5:00":
+                return 8;
+            default:
+                return -1;
+        }
     }
 }

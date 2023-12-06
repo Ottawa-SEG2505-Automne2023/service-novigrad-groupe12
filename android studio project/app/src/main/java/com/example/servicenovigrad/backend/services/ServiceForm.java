@@ -3,7 +3,7 @@ package com.example.servicenovigrad.backend.services;
 import android.app.Activity;
 import android.content.Intent;
 
-import com.example.servicenovigrad.ui.FillFormActivity;
+import com.example.servicenovigrad.ui.client.FillFormActivity;
 import com.example.servicenovigrad.ui.admin.EditFormActivity;
 
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ public class ServiceForm {
         }
         // Attach an identifier for this object
         intent.putExtra("formID", id);
-        context.startActivity(intent);
+        context.startActivityForResult(intent, 0);
     }
 
     public boolean equals(ServiceForm other) {

@@ -11,7 +11,7 @@ import com.example.servicenovigrad.backend.services.ServiceForm;
 import com.example.servicenovigrad.backend.util.DataModifiedHook;
 import com.example.servicenovigrad.ui.branch.EmployeeMainActivity;
 import com.example.servicenovigrad.ui.admin.AdminMainActivity;
-import com.example.servicenovigrad.ui.MainActivity;
+import com.example.servicenovigrad.ui.client.MainActivity;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -19,7 +19,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.PriorityQueue;
@@ -55,11 +54,13 @@ public class DatabaseHandler {
                     for (DataSnapshot user : snapshot.getChildren()) {
                         // Only get accounts that are not the one we just logged into
                         if (!account.getUsername().equals(user.child("username").getValue(String.class))) {
+                            Account acct;
                             if (Objects.equals(user.child("role").getValue(String.class), "Employé de la succursale")) {
-                                userQueue.add(user.getValue(BranchAccount.class));
+                                acct = user.getValue(BranchAccount.class);
                             } else {
-                                userQueue.add(user.getValue(Account.class));
+                                acct = user.getValue(Account.class);
                             }
+                            if (acct != null) {userQueue.add(acct);}
                         }
                     }
                     // Fill the list
@@ -78,35 +79,16 @@ public class DatabaseHandler {
                     Log.d("AccountHandler", "Cannot connect to database: " + error.getMessage());
                 }
             });
-            runServiceLoader();
 
             // Launch the admin activity
             return AdminMainActivity.class;
         }
         // Employee login
         else if (user.getRole().equals("Employé de la succursale")) {
-            runServiceLoader();
             return EmployeeMainActivity.class;
         }
 
         // Client login
-        runServiceLoader();
-        database.getReference("completeBranches").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    for (DataSnapshot child : snapshot.getChildren()) {
-                        branches.add(child.getValue(CompleteBranch.class));
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("DatabaseHandler", "Couldn't access database: " + error.getMessage());
-            }
-        });
-
         return MainActivity.class;
     }
 
@@ -133,11 +115,12 @@ public class DatabaseHandler {
     // Deletes a specific user from the database
     public static void deleteUser(Account account) {
         usersRef.child(account.getUsername()).removeValue();
+        if (account instanceof BranchAccount) {
+            database.getReference("completeBranches/" + account.getUsername()).removeValue();
+        }
     }
 
-    public static List<CompleteBranch> getBranches() {
-        return branches;
-    }
+    public static List<CompleteBranch> getBranches() {return branches;}
 
     // SERVICES METHODS
     public static void addService(ServiceForm s) {
@@ -159,20 +142,22 @@ public class DatabaseHandler {
 
     // Sends a notification to the given user
     public static void notify(String username, String message) {
-        DatabaseReference ref = usersRef.child(username).child("notifications");
+        DatabaseReference ref = usersRef.child(username);
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 // If the account already has notifications
                 if (snapshot.exists()) {
-                    // Append to the end of the list
-                    long ext = snapshot.getChildrenCount();
-                    ref.child("" + ext).setValue(message);
-                }
-                // Otherwise
-                else {
-                    // Create the first instance in the list
-                    ref.child("0").setValue(message);
+                    if (snapshot.child("notifications").exists()) {
+                        // Append to the end of the list
+                        long ext = snapshot.getChildrenCount();
+                        ref.child("/notifications/" + ext).setValue(message);
+                    }
+                    // Otherwise
+                    else {
+                        // Create the first instance in the list
+                        ref.child("/notifications/0").setValue(message);
+                    }
                 }
             }
 
@@ -183,7 +168,7 @@ public class DatabaseHandler {
         });
     }
 
-    private static void runServiceLoader() {
+    public static void runServiceLoader() {
         servicesRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

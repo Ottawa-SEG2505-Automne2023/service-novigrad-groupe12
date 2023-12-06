@@ -48,6 +48,14 @@
     <string name="deny">Refuser</string>
     <string name="submit">Soumettre la demande</string>
     <string name="cancel">Annuler la demande</string>
+    <string name="search">Rechercher une succursale</string>
+    <string name="search_by">Rechercher par:</string>
+    <string name="hours">Heures de travail</string>
+    <string name="services">Service offert</string>
+    <string name="view_services">Voir les services</string>
+    <string name="create_demand">Créer une demande</string>
+    <string name="rate">Soumettez votre note</string>
+    <string name="ok">OK</string>
     <string name="document_disclaimer">C\'est ici que l\'utilisateur téléchargerait une image du document demandé, qui serait ensuite téléchargée sur le stockage cloud de Service Novigrad. Puisque cela nécessiterait de payer pour le stockage de fichiers en ligne, ce texte est ici à sa place.</string>
     <string-array name="signup_roles">
         <item>Client</item>
@@ -62,7 +70,7 @@
         <item>Base</item>
         <item>Username/Password</item>
         <item>Nom</item>
-        <item>Nombre</item>
+        <item>Adresse</item>
         <item>Date</item>
     </string-array>
     <string-array name="times">
@@ -75,5 +83,12 @@
         <item>3:00</item>
         <item>4:00</item>
         <item>5:00</item>
+    </string-array>
+    <string-array name="ratings">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
     </string-array>
 </resources>

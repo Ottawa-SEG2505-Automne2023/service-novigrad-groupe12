@@ -14,10 +14,12 @@ public class WelcomeActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        // Constructing the welcome message
-        String welcomeMessage = String.format("Bienvenue, %s! Vous êtes connecté en tant que %s.",
-                DatabaseHandler.user.getPrenom(), DatabaseHandler.user.getRole());
+        if (DatabaseHandler.user != null) {
+            // Constructing the welcome message
+            String welcomeMessage = String.format("Bienvenue, %s! Vous êtes connecté en tant que %s.",
+                    DatabaseHandler.user.getPrenom(), DatabaseHandler.user.getRole());
 
-        welcomeText.setText(welcomeMessage);
+            welcomeText.setText(welcomeMessage);
+        }
     }
 }

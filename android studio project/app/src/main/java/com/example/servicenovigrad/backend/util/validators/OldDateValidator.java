@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class OldDateValidator extends FieldValidator {
-    private int minAge;
+    private final int minAge;
     // Currently untested, will test when implementing employee and/or client stuff
     public OldDateValidator(Updatable origin, TextView fieldLabel, String type, int minAge) {
         super(origin, fieldLabel, type);

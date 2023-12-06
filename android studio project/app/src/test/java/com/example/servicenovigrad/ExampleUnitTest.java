@@ -6,6 +6,7 @@ import static org.junit.Assert.*;
 
 import com.example.servicenovigrad.backend.account.Account;
 import com.example.servicenovigrad.backend.account.BranchAccount;
+import com.example.servicenovigrad.backend.account.CompleteBranch;
 import com.example.servicenovigrad.backend.services.ElementType;
 import com.example.servicenovigrad.backend.services.ExtraFormData;
 import com.example.servicenovigrad.backend.services.FormElement;
@@ -13,6 +14,8 @@ import com.example.servicenovigrad.backend.services.ServiceForm;
 import com.example.servicenovigrad.backend.util.validators.AddressValidator;
 import com.example.servicenovigrad.backend.util.validators.OldDateValidator;
 import com.example.servicenovigrad.backend.util.validators.UserPassValidator;
+
+import java.util.HashMap;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -149,18 +152,83 @@ public class ExampleUnitTest {
     }
 
     @Test
-    public void testBranchStuff() {
+    public void testBasicBranchStuff() {
         BranchAccount acct = new BranchAccount("", "B", "", "Employé de la succursale", "p");
         acct.setOpeningHours(0);
         acct.setClosingHours(8);
         for (int i = 0; i < 7; i++) {acct.getDaysList().add(false);}
         acct.getDaysList().set(2, true);
 
-        assertEquals("9:00", acct.storedHoursToRealHours(acct.getOpeningHours()));
-        assertEquals("5:00", acct.storedHoursToRealHours(acct.getClosingHours()));
         assertTrue(acct.getDaysList().get(2));
         assertFalse(acct.getDaysList().get(1));
 
         System.out.println("testBranchStuff passed!");
+    }
+
+    @Test
+    // Simple but incredibly important, as we need to make sure any edits to any external
+    // maps does not update the ratings of the branch
+    public void testRatingsImmutable() {
+        CompleteBranch branch = new CompleteBranch();
+        HashMap<String, Integer> map = new HashMap<>();
+        branch.setRatingSpread(map);
+        assertNotSame(map, branch.getRatingSpread());
+
+        System.out.println("testRatingsImmutable passed!");
+    }
+
+    @Test
+    public void testBranchRating() {
+        CompleteBranch branch = new CompleteBranch();
+        HashMap<String, Integer> map = new HashMap<>();
+        map.put("r1", 10);
+        map.put("r5", 4);
+        map.put("r3", 4);
+        branch.setRatingSpread(map);
+        // (10*1 + 4*5 + 4*3)/18 = 2.3333
+        assertEquals("2.3", String.format("%.1f", branch.rating()));
+        branch.getRatingSpread().put("r4", 4);
+        // 2.636363...
+        assertEquals("2.6", String.format("%.1f", branch.rating()));
+
+        System.out.println("testBranchRating passed!");
+    }
+
+    @Test
+    public void testHourConversion() {
+        String[] hours = new String[]{"9", "10", "11", "12", "1", "2", "3", "4", "5"};
+        for (int i = 0; i < hours.length; i++) {
+            assertEquals(i, CompleteBranch.realHoursToStoredHours(hours[i] + ":00"));
+        }
+        assertEquals(-1, CompleteBranch.realHoursToStoredHours("7:00"));
+        assertEquals(-1, CompleteBranch.realHoursToStoredHours("13:00"));
+
+        System.out.println("testHourConversion passed!");
+    }
+
+    @Test
+    public void testBranchOpen() {
+        CompleteBranch branch = new CompleteBranch();
+        branch.setOpeningHours(5);
+        branch.setClosingHours(7);
+        assertFalse(branch.isOpenAt(4));
+        assertTrue(branch.isOpenAt(5));
+        assertTrue(branch.isOpenAt(6));
+        assertFalse(branch.isOpenAt(7));
+        assertFalse(branch.isOpenAt(10000));
+        branch.setOpeningHours(0);
+        assertTrue(branch.isOpenAt(CompleteBranch.realHoursToStoredHours("1:00")));
+
+        System.out.println("testBranchOpen passed!");
+    }
+
+    @Test
+    public void testNoRatings() {
+        CompleteBranch branch = new CompleteBranch();
+        assertEquals(-1, branch.rating(), 0.1);
+        branch.setRatingSpread(new HashMap<String, Integer>());
+        assertEquals(-1, branch.rating(), 0.1);
+
+        System.out.println("testNoRatings passed!");
     }
 }

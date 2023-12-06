@@ -39,27 +39,4 @@ public class BranchAccount extends Account {
     public void setClosingHours(int closingHours) {this.closingHours = closingHours;}
     public void setAddress(String address) {this.address = address;}
     public void setRequests(List<FilledForm> requests) {this.requests.clear(); if (requests != null) {this.requests.addAll(requests);}}
-
-    public String storedHoursToRealHours(int stored) {
-        switch (stored) {
-            case 1:
-                return "10:00";
-            case 2:
-                return "11:00";
-            case 3:
-                return "12:00";
-            case 4:
-                return "1:00";
-            case 5:
-                return "2:00";
-            case 6:
-                return "3:00";
-            case 7:
-                return "4:00";
-            case 8:
-                return "5:00";
-            default:
-                return "9:00";
-        }
-    }
 }

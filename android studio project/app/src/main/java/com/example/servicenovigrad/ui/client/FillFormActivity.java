@@ -212,11 +212,14 @@ public class FillFormActivity extends AppCompatActivity implements Updatable {
     }
 
     // Update whether or not we can submit the form in its current state
+    // Commented out because it's laggy as hell
     public void update() {
+        /*
         for (FillFormElementAdapter.FilledBaseHolder holder : adapter.getHolders()) {
             if (holder.getText().equals("")) {submitBtn.setEnabled(false); break;}
             else if (!holder.isValid()) {submitBtn.setEnabled(false); break;}
         }
+         */
         submitBtn.setEnabled(true);
     }
 
